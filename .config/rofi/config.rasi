@@ -6,9 +6,9 @@ configuration {
 	sidebar-mode:    true;
 }
 * {
-  background-color: #282C3370;
+  background-color: #B4D7F570;
   border-color: #2e343f;
-  text-color: #8ca0aa;
+  text-color: #262d40;
   spacing: 0;
   width: 512;
 }
@@ -23,9 +23,14 @@ prompt {
   border: 0 1px 0 0;
 }
 
+window {
+    border-radius: 10px;
+}
+
 textbox {
   background-color: #2e343f20;
   border: 0 0 1px 0;
+  border-radius: 10px;
   border-color: #282C33;
   padding: 8px 16px;
 }

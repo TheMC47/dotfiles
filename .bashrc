@@ -141,12 +141,10 @@ ex ()
 # better yaourt colors
 export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35"
 
-
-
 export PATH=$PATH:/usr/java/jre1.8.0_221/bin:/home/yecinem/ghidra_9.0.4:/home/yecinem/.emacs.d/bin:/home/yecinem/riscv32imnewlib/bin
 
-
 export PATH=/home/yecinem/.cabal/bin:$PATH
+
 powerline-daemon -q
 POWERLINE_BASH_CONTINUATION=1
 POWERLINE_BASH_SELECT=1
@@ -191,7 +189,7 @@ alias django-migrate="./manage.py migrate"
 alias django-makemigrations="./manage.py makemigrations"
 
 # Isabelle
-alias jisabelle="devour ~/Isabelle2020/bin/isabelle jedit"
+alias jisabelle="env _JAVA_AWT_WM_NONREPARENTING=1 devour ~/Isabelle2020/bin/isabelle jedit"
 
 # EMACS
 export EDITOR="emacs -nw"
@@ -208,3 +206,18 @@ PERL_MM_OPT="INSTALL_BASE=/home/yecinem/perl5"; export PERL_MM_OPT;
 
 # Dotfiles
 alias config="/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME"
+
+# Toggle plasma-shell: xmonad doesn't handle plasma-shell well.
+
+togglePlasma(){
+    PLASMA_LOCATION="${HOME}/.config/autostart/org.kde.plasmashell.desktop"
+    PLASMA_BACK="${PLASMA_LOCATION}.BACK"
+    if [[ -f $PLASMA_LOCATION ]]
+    then
+        echo "Enabling plasma-shell"
+        mv $PLASMA_LOCATION $PLASMA_BACK
+    else
+        echo "Disabling plasma-shell"
+        mv $PLASMA_BACK $PLASMA_LOCATION
+    fi
+}
