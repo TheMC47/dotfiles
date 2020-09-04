@@ -1,0 +1,1 @@
+/home/yecinem/.xmonad/lib/ColorScheme.hs
