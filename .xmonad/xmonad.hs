@@ -5,8 +5,9 @@ import           Data.List.Split
 
 import qualified Data.Map                      as M
 
-import           ColorScheme
-import           XFKeys
+-- import           ColorScheme
+-- import           XFKeys
+import           XMonad.Layout.Spiral
 
 import           XMonad
 import           XMonad.Config.Kde
@@ -28,6 +29,61 @@ import qualified XMonad.StackSet               as W
 
 import           System.IO
 
+bgColor = "#B4D7F5"
+fgColor = "#262d40"
+
+xF86XK_AudioLowerVolume :: KeySym
+xF86XK_AudioLowerVolume = 0x1008FF11
+
+xF86XK_AudioMute :: KeySym
+xF86XK_AudioMute = 0x1008FF12
+
+xF86XK_AudioRaiseVolume :: KeySym
+xF86XK_AudioRaiseVolume = 0x1008FF13
+
+-- xF86XK_AudioPlay :: KeySym
+-- xF86XK_AudioPlay = 0x1008FF14
+
+-- xF86XK_AudioStop :: KeySym
+-- xF86XK_AudioStop = 0x1008FF15
+
+-- xF86XK_AudioPrev :: KeySym
+-- xF86XK_AudioPrev = 0x1008FF16
+
+-- xF86XK_AudioNext :: KeySym
+-- xF86XK_AudioNext = 0x1008FF17
+
+-- xF86XK_Search :: KeySym
+-- xF86XK_Search = 0x1008FF1B
+
+-- xF86XK_RFKill :: KeySym
+-- xF86XK_RFKill = 0x1008FFB5
+
+-- The needed funcionality
+
+raiseVolume :: Int -> X ()
+raiseVolume n =
+  spawn $ "pactl set-sink-volume @DEFAULT_SINK@ +" ++ show n ++ "% "
+
+
+lowerVolume :: Int -> X ()
+lowerVolume n =
+  spawn $ "pactl set-sink-volume @DEFAULT_SINK@ -" ++ show n ++ "% "
+
+mute :: X ()
+mute = spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+
+-- They keymap
+
+xF86XK_keyMap :: [((KeyMask, KeySym), X ())]
+xF86XK_keyMap = [ ((0, keySym), action) | (keySym, action) <- bindings ]
+ where
+  bindings =
+    [ (xF86XK_AudioRaiseVolume, raiseVolume 10)
+    , (xF86XK_AudioLowerVolume, lowerVolume 10)
+    , (xF86XK_AudioMute       , mute)
+    ]
+
 myModMask :: KeyMask
 myModMask = mod4Mask
 
@@ -37,27 +93,28 @@ myModMask = mod4Mask
 -- I mainly didn't like the code, so I tried to make it more maintainable and more readable
 
 myWorkspaces :: [String]
-myWorkspaces = zipWith wsToActionAt keyBindings . map xmobarRaw $ wss
-  where
-         keyBindings = [1 .. 9] ++ [0 :: Integer]
-         -- Icons from Font Awesome. They need to be in unicode.
-         wss =
-           [ "1:\xf02d" -- 
-           , "2:\xf120" -- 
-           , "3:\xf268" -- 
-           , "4:\xf108" -- 
-           , "5:\xf108" -- 
-           , "6:\xf108" -- 
-           , "7:\xf108" -- 
-           , "8:\xf095" -- 
-           , "9:\xf2dc" -- 
-           , "10:\xf11b \xf236" --  
-           ]
-         modString = modToString myModMask
-         -- The utility xdotool must be on the system for this to work
-         command at = "xdotool key " ++ modString ++ "+" ++ show at
-         mouseKey = "1"
-         wsToActionAt at = xmobarAction (command at) mouseKey
+myWorkspaces = zipWith wsToActionAt keyBindings wss
+ where
+  keyBindings = [1 .. 9] ++ [0 :: Integer]
+  -- Icons from Font Awesome. They need to be in unicode.
+  wss         = zipWith (++) (map ((++ ":") . show) [(1 :: Int) .. 10]) $ map
+    (wrap "<fn=1>" "</fn>")
+    [ "\xf02d" -- 
+    , "\xf120" -- 
+    , "\xf268" -- 
+    , "\xf108" -- 
+    , "\xf108" -- 
+    , "\xf108" -- 
+    , "\xf108" -- 
+    , "\xf095" -- 
+    , "\xf2dc" -- 
+    , "\xf11b \xf236" --  
+    ]
+  modString = modToString myModMask
+  -- The utility xdotool must be on the system for this to work
+  command at = "xdotool key " ++ modString ++ "+" ++ show at
+  mouseKey = "1"
+  wsToActionAt at = xmobarAction (command at) mouseKey
 
 workspaceAt :: Int -> String
 workspaceAt 0 = last myWorkspaces
@@ -113,11 +170,11 @@ myKeys conf@XConfig { XMonad.modMask = modm } =
          )
 
     -- Move focus to the next window
-       , ( (modm, xK_j)
-         , windows W.focusDown
+       , ((modm, xK_j), windows W.focusDown)
+       , ((modm, xK_a), sendMessage MirrorShrink)
+       , ( (modm, xK_z)
+         , sendMessage MirrorExpand
          )
-       , ((modm,               xK_a), sendMessage MirrorShrink)
-       , ((modm,               xK_z), sendMessage MirrorExpand)
     -- Move focus to the previous window
        , ( (modm, xK_k)
          , windows W.focusUp
@@ -183,9 +240,7 @@ myKeys conf@XConfig { XMonad.modMask = modm } =
          , doFullScreen
          )
     -- Restart xmonad
-       , ( (modm, xK_q)
-         , spawn "xmonad --recompile; xmonad --restart"
-         )
+       , ((modm, xK_q), spawn "xmonad --recompile; xmonad --restart")
        ]
     ++
 
@@ -209,7 +264,7 @@ myKeys conf@XConfig { XMonad.modMask = modm } =
        ]
 
     ++ xF86XK_keyMap
-       
+
 myMouseBindings XConfig { XMonad.modMask = modm } = M.fromList
     -- mod-button1, Set the window to floating mode and move by dragging
   [ ( (modm, button1)
@@ -228,7 +283,7 @@ myMouseBindings XConfig { XMonad.modMask = modm } = M.fromList
   ]
 
 -- Since gaps and spacing are enabled, this is a little different than the typical answer you  find online
-doFullScreen :: X()
+doFullScreen :: X ()
 doFullScreen = do
   sendMessage $ Toggle FULL
   sendMessage ToggleStruts
@@ -237,15 +292,16 @@ doFullScreen = do
 
 myLayout =
   smartBorders -- imporvments
-    . spacingRaw True (Border 0 10 10 10) True (Border 5 5 5 5) True -- between windows
+    .   spacingRaw True (Border 0 10 10 10) True (Border 5 5 5 5) True -- between windows
     .   gaps [(U, 42), (R, 10), (L, 10), (D, 42)] -- along the screen
     .   avoidStruts -- show the bar
     .   mkToggle (NOBORDERS ?? FULL ?? EOT) -- toggle full screen
     $   tiled
     ||| Mirror tiled
     ||| Full
+    ||| spiral (6 / 7)
  where
-  tiled  = ResizableTall nmaster delta ratio []
+  tiled   = ResizableTall nmaster delta ratio []
 
   -- The default number of windows in the master pane
   nmaster = 1
@@ -266,7 +322,7 @@ myLayout =
 myManageHook :: ManageHook
 myManageHook = composeAll manageHooks
  where
-  manageHooks  = generalRules ++ concat windowRules
+  manageHooks = generalRules ++ concat windowRules
   generalRules =
     [ className =? "discord" --> doShift (workspaceAt 8)
     , fmap not isDialog --> doF avoidMaster
@@ -277,20 +333,20 @@ myManageHook = composeAll manageHooks
     ]
   floatsClasses = ["MPlayer", "Gimp", "yakuake", "Plasma-desktop", "ksmserver"]
   floatsTitles  = ["alsamixer"]
- 
+
 avoidMaster :: W.StackSet i l a s sd -> W.StackSet i l a s sd
 avoidMaster = W.modify' $ \c -> case c of
-     W.Stack t [] (r:rs) ->  W.Stack t [r] rs
-     _                   -> c
+  W.Stack t [] (r : rs) -> W.Stack t [r] rs
+  _                     -> c
 
 -- Expects the window name at the third place
 formatOutput :: String -> (String, String)
 formatOutput s
-  | length splitted <= 2= (intercalate actualSeparator splitted, greeting)
-  | otherwise           = (intercalate actualSeparator (init splitted), last splitted)
-  where
-    splitted = splitOn weirdSeparator s
-    greeting = "Hey you, you're finally awake..."
+  | length splitted <= 2 = (intercalate actualSeparator splitted, greeting)
+  | otherwise = (intercalate actualSeparator (init splitted), last splitted)
+ where
+  splitted = splitOn weirdSeparator s
+  greeting = "Hey you, you're finally awake..."
 
 
 outputLogger :: Handle -> Handle -> String -> IO ()
@@ -311,23 +367,12 @@ spawnXMobar location = spawnPipe xmobarCommand
  where
   xmobarCommand = prefix ++ location ++ ".hs"
   prefix =
-      "/home/yecinem/.cabal/bin/xmobar -x 0"
-      ++ " -B " ++ wrap "\"" "\"" bgColor
-      ++ " -F " ++ wrap "\"" "\"" fgColor
+    "/home/yecinem/.local/bin/xmobar -x 0"
+      ++ " -B "
+      ++ wrap "\"" "\"" bgColor
+      ++ " -F "
+      ++ wrap "\"" "\"" fgColor
       ++ " /home/yecinem/.xmonad/xmobar_"
-
---
--- | Use xmobar box to add a border to an arbitrary string.
-xmobarBorder :: String -- ^ Border type. Possible values: VBoth, HBoth, Full,
-                       -- Top, Bottom, Left or Right
-             -> String -- ^ color: a color name, or #rrggbb format
-             -> Int    -- ^ width in pixels
-             -> String -- ^ output string
-             -> String
-xmobarBorder border color width = wrap prefix "</box>"
-  where
-    prefix = "<box type=" ++ border ++ " width=" ++ show width ++ " color="
-      ++ color ++ ">"
 
 main :: IO ()
 main = do
@@ -336,10 +381,9 @@ main = do
   xmproc_bottom <- spawnXMobar "bottom"
   let bar = xmobarPP { ppOutput          = outputLogger xmproc_top xmproc_bottom
                      , ppTitle           = shorten 50
-                     , ppCurrent         = xmobarBorder "Bottom" fgColor 4 . pad
-                     , ppUrgent = xmobarBorder "Bottom" "#CD3C66" 4 . pad
-                     , ppHiddenNoWindows = xmobarColor "#98a0b3" "" . pad
-                     , ppHidden          = pad
+                     , ppCurrent         = xmobarBorder "Bottom" fgColor 4
+                     , ppUrgent          = xmobarBorder "Bottom" "#CD3C66" 4
+                     , ppHiddenNoWindows = xmobarColor "#98a0b3" ""
                      , ppSep             = weirdSeparator
                      }
 

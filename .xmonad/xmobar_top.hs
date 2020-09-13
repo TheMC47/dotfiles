@@ -1,5 +1,7 @@
 Config {
-  font = "xft:SFN display:size=10,FontAwesome:size=10"
+  -- font = "xft:SFN display:size=10"
+  font = "xft:Source Code Pro:size=11:regular:antialias=true"
+  , additionalFonts = [ "xft:FontAwesome:pixelsize=13" ]
   , position = TopSize L 100 30
   , iconRoot = "/home/yecinem/.xmonad/xpm"
   , commands = [Run Cpu [ "--template" , "<ipat><total>%"
@@ -26,7 +28,7 @@ Config {
                     , "--"
                     , "--used-icon-pattern" , "<icon=ram/ram_%%.xpm/>"
                     ] 10
-               , Run Date "%a %b %_d  %H:%M" "date" 10
+               , Run Date "%a %b %_d <fn=1></fn> %H:%M" "date" 10
                , Run Battery [ "--template"  , "<leftipat> <acstatus>"
                      , "--Low"       , "20"      -- units: %
                      , "--High"      , "90"      -- units: %
@@ -48,5 +50,5 @@ Config {
                ]
   , sepChar = "%"
   , alignSep = "}{"
-  , template = "<icon=haskell_20.xpm/>  %UnsafeStdinReader%}  %date% { %cpu% | %memory% | %battery% "
+  , template = "<icon=haskell_20.xpm/> %UnsafeStdinReader%} <fn=1></fn> %date% { %cpu% | %memory% | %battery% "
   }
