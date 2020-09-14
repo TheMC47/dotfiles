@@ -1,0 +1,37 @@
+name:
+    xmonad-private
+
+dependencies:
+    - base >= 4.7 && < 5
+    - xmonad
+
+ghc-options:
+    - -Wall
+
+library:
+    source-dirs: src
+    dependencies:
+        - containers
+        - flow
+        - process
+        - unix
+        - xmobar
+        - xmonad-contrib
+        - xmonad
+        - split
+
+executable:
+    main: xmonad.hs
+    other-modules: []
+    ghc-options:
+        - -i
+        - -ilib
+        - -fforce-recomp
+        - -v0
+        - -O2
+        - -threaded
+        - -rtsopts
+        - -with-rtsopts=-N
+        - -Wall
+    dependencies:
+        - xmonad-private
