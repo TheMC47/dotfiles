@@ -1,4 +1,17 @@
 #+TITLE: Readme
 
+xmonad.desktop
+#+BEGIN_SRC bash
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Xmonad
+Comment=Lightweight X11 tiled window manager written in Haskell
+Exec=env KDEWM=/home/yecinem/.local/bin/xmonad /usr/bin/startplasma-x11
+Icon=xmonad
+Terminal=false
+StartupNotify=false
+Categories=Application;
+#+END_SRC
 https://github.com/jumper149/xpm-status-icons
 https://github.com/jumper149/dotfiles
