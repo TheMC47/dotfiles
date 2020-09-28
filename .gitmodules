@@ -1,3 +1,15 @@
 [submodule ".doom.d"]
 	path = .doom.d
 	url = git@github.com:TheMC47/emacs-config.git
+[submodule ".xmonad/X11"]
+	path = .xmonad/X11
+	url = git@github.com:xmonad/X11.git
+[submodule ".xmonad/xmobar-git"]
+	path = .xmonad/xmobar-git
+	url = git@github.com:jaor/xmobar.git
+[submodule ".xmonad/xmonad-contrib-git"]
+	path = .xmonad/xmonad-contrib-git
+	url = https://github.com/xmonad/xmonad-contrib
+[submodule ".xmonad/xmonad-git"]
+	path = .xmonad/xmonad-git
+	url = https://github.com/xmonad/xmonad

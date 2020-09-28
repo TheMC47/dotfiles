@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: be8afa7dca7f8e49210413e50abd251afbe3fd8f3cea86c86c969dd2da23b449
+-- hash: cf474e26f32af1c06f93f5959b29ff36b7783fb77dc4a6c1ba06a1eb01e42257
 
 name:           xmonad-private
 version:        0.0.0
@@ -14,14 +14,14 @@ library
   exposed-modules:
       ColorScheme
       Config
-      XFKeys
   other-modules:
       Paths_xmonad_private
   hs-source-dirs:
       src
   ghc-options: -Wall
   build-depends:
-      base >=4.7 && <5
+      X11
+    , base >=4.7 && <5
     , containers
     , flow
     , process

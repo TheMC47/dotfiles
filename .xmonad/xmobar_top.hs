@@ -52,3 +52,4 @@ Config {
   , alignSep = "}{"
   , template = "<icon=haskell_20.xpm/> %UnsafeStdinReader%} <fn=1></fn> %date% { %cpu% | %memory% | %battery% "
   }
+

@@ -18,6 +18,7 @@ library:
         - xmobar
         - xmonad-contrib
         - xmonad
+        - X11
         - split
 
 executable:
