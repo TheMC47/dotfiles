@@ -143,9 +143,10 @@ ex ()
 # better yaourt colors
 export YAOURT_COLORS="nb=1:pkg=1:ver=1;32:lver=1;45:installed=1;42:grp=1;34:od=1;41;5:votes=1;44:dsc=0:other=1;35"
 
-export PATH=$PATH:/usr/java/jre1.8.0_221/bin:/home/yecinem/ghidra_9.0.4:/home/yecinem/.emacs.d/bin:/home/yecinem/riscv32imnewlib/bin
 
-export PATH=/home/yecinem/.cabal/bin:$PATH
+export PATH=$PATH:/usr/java/jre1.8.0_221/bin:$HOME/ghidra_9.0.4:$HOME/.emacs.d/bin:$HOME/riscv32imnewlib/bin
+
+export PATH=$HOME/.cabal/bin:$PATH
 
 powerline-daemon -q
 POWERLINE_BASH_CONTINUATION=1
@@ -155,14 +156,14 @@ POWERLINE_BASH_SELECT=1
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/yecinem/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/yecinem/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/yecinem/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "$HOME/anaconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/home/yecinem/anaconda3/bin:$PATH"
+        export PATH="$HOME/anaconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
@@ -200,11 +201,11 @@ alias emacs="emacs -nw"
 
 neofetch
 
-PATH="/home/yecinem/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/yecinem/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/yecinem/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/yecinem/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/yecinem/perl5"; export PERL_MM_OPT;
+PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"$HOME/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"; export PERL_MM_OPT;
 
 # Dotfiles
 alias config="/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME"
@@ -223,3 +224,8 @@ togglePlasma(){
         mv $PLASMA_BACK $PLASMA_LOCATION
     fi
 }
+
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/yecinem_/.sdkman"
+[[ -s "/home/yecinem_/.sdkman/bin/sdkman-init.sh" ]] && source "/home/yecinem_/.sdkman/bin/sdkman-init.sh"
