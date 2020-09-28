@@ -3,7 +3,7 @@ Config {
   font = "xft:Source Code Pro:size=11:regular:antialias=true"
   , additionalFonts = [ "xft:FontAwesome:pixelsize=13" ]
   , position = TopSize L 100 30
-  , iconRoot = "/home/yecinem/.xmonad/xpm"
+  , iconRoot = "xpm"
   , commands = [Run Cpu [ "--template" , "<ipat><total>%"
                  , "--Low"      , "55"      -- units: %
                  , "--High"     , "77"      -- units: %
