@@ -294,12 +294,12 @@ spawnXMobar location = spawnPipe xmobarCommand
  where
   xmobarCommand = prefix ++ location ++ ".hs"
   prefix =
-    "/home/yecinem/.local/bin/xmobar -x 0"
+    "xmobar -x 0"
       ++ " -B "
       ++ wrap "\"" "\"" bgColor
       ++ " -F "
       ++ wrap "\"" "\"" fgColor
-      ++ " /home/yecinem/.xmonad/xmobar_"
+      ++ " $HOME/.xmonad/xmobar_"
 
 
 privateConfig = go <$> spawnXMobar "top" <*> spawnXMobar "bottom"
