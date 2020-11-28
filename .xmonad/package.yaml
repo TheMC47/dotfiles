@@ -4,35 +4,28 @@ name:
 dependencies:
     - base >= 4.7 && < 5
     - xmonad
-
-ghc-options:
-    - -Wall
+    - xmonad-contrib
+    - X11
+    - xmobar
+    - containers
+    - flow
+    - process
+    - unix
+    - split
 
 library:
     source-dirs: src
-    dependencies:
-        - containers
-        - flow
-        - process
-        - unix
-        - xmobar
-        - xmonad-contrib
-        - xmonad
-        - X11
-        - split
+    exposed-modules:
+      - ColorScheme
+      - Config
 
-executable:
-    main: xmonad.hs
-    other-modules: []
+executables:
+  xmonad-private:
+    main:              xmonad.hs
     ghc-options:
-        - -i
-        - -ilib
-        - -fforce-recomp
-        - -v0
-        - -O2
-        - -threaded
-        - -rtsopts
-        - -with-rtsopts=-N
-        - -Wall
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
     dependencies:
-        - xmonad-private
+    - xmonad-private

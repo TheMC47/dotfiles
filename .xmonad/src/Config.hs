@@ -20,12 +20,17 @@ import           XMonad.Layout.MultiToggle.Instances
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.Spacing
-import           XMonad.Layout.Spiral
 import qualified XMonad.StackSet               as W
 import           XMonad.Util.Run
 
+
+
 myModMask :: KeyMask
 myModMask = mod4Mask
+
+altMask :: KeyMask
+altMask = mod1Mask
+
 
 -- preprocess strings before sending to xmobar
 
@@ -182,7 +187,8 @@ myKeys conf@XConfig { XMonad.modMask = modm } =
       --
        [ ((m .|. modm, k), windows $ f i)
        | (i, k) <- zip (XMonad.workspaces conf) ([xK_1 .. xK_9] ++ [xK_0])
-       , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
+       , (f, m) <-
+         [(W.view, 0), (W.shift, shiftMask), (W.greedyView, controlMask)]
        ]
     ++
       --
@@ -222,12 +228,10 @@ myLayout =
   smartBorders -- imporvments
     .   spacingRaw True (Border 0 10 10 10) True (Border 5 5 5 5) True -- between windows
     .   gaps [(U, 42), (R, 10), (L, 10), (D, 42)] -- along the screen
-    .   avoidStruts -- show the bar
     .   mkToggle (NOBORDERS ?? FULL ?? EOT) -- toggle full screen
-    $   tiled
-    ||| Mirror tiled
+    $   avoidStruts tiled
+    ||| avoidStruts (Mirror tiled)
     ||| Full
-    ||| spiral (6 / 7)
  where
   tiled   = ResizableTall nmaster delta ratio []
 
@@ -259,8 +263,9 @@ myManageHook = composeAll manageHooks
     [ [ className =? c --> doFloat | c <- floatsClasses ]
     , [ title =? t --> doFloat | t <- floatsTitles ]
     ]
-  floatsClasses = ["MPlayer", "Gimp", "yakuake", "Plasma-desktop", "ksmserver"]
-  floatsTitles  = ["alsamixer"]
+  floatsClasses =
+    ["MPlayer", "Gimp", "yakuake", "Plasma-desktop", "ksmserver", "r_x11"]
+  floatsTitles = ["alsamixer"]
 
 avoidMaster :: W.StackSet i l a s sd -> W.StackSet i l a s sd
 avoidMaster = W.modify' $ \c -> case c of
@@ -299,7 +304,7 @@ spawnXMobar location = spawnPipe xmobarCommand
       ++ wrap "\"" "\"" bgColor
       ++ " -F "
       ++ wrap "\"" "\"" fgColor
-      ++ " $HOME/.xmonad/xmobar_"
+      ++ " $HOME/.xmonad/app/xmobar_"
 
 
 privateConfig = go <$> spawnXMobar "top" <*> spawnXMobar "bottom"
@@ -323,4 +328,6 @@ privateConfig = go <$> spawnXMobar "top" <*> spawnXMobar "bottom"
           , focusedBorderColor = bgColor
           , normalBorderColor  = fgColor
           , logHook            = dynamicLogWithPP bar
+                                            -- , startupHook        = spawner ["stalonetray", "pkill stalonetray", "stalonetray"]
+                                              -- ["pkill stalonetray", "stalonetray", "redshift-gtk", "nm-applet", "volumeicon"]
           }
