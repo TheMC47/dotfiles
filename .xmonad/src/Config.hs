@@ -1,18 +1,19 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module Config where
 
 import           ColorScheme
-import           Data.List
-import           Data.List.Split
 import qualified Data.Map                      as M
 import           Graphics.X11.ExtraTypes.XF86
 import           System.IO
+import           Control.Monad                  ( when )
 import           XMonad
 import           XMonad.Config.Kde
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDocks
+import           Data.Monoid                    ( All(All) )
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Layout.Gaps
 import           XMonad.Layout.MultiToggle
@@ -20,8 +21,10 @@ import           XMonad.Layout.MultiToggle.Instances
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.Spacing
+import           XMonad.Layout.LayoutModifier
 import qualified XMonad.StackSet               as W
 import           XMonad.Util.Run
+import           XMonad.Util.Loggers
 
 
 
@@ -220,17 +223,22 @@ myMouseBindings XConfig { XMonad.modMask = modm } = M.fromList
 doFullScreen :: X ()
 doFullScreen = do
   sendMessage $ Toggle FULL
+  doCollapse
+
+doCollapse :: X()
+doCollapse = do
   sendMessage ToggleStruts
   toggleScreenSpacingEnabled
   sendMessage ToggleGaps
 
 myLayout =
-  smartBorders -- imporvments
+  avoidStruts
+    .   smartBorders -- imporvments
     .   spacingRaw True (Border 0 10 10 10) True (Border 5 5 5 5) True -- between windows
-    .   gaps [(U, 42), (R, 10), (L, 10), (D, 42)] -- along the screen
+    .   gaps [(U, 10), (R, 10), (L, 10), (D, 10)] -- along the screen, excluding docks
     .   mkToggle (NOBORDERS ?? FULL ?? EOT) -- toggle full screen
-    $   avoidStruts tiled
-    ||| avoidStruts (Mirror tiled)
+    $   tiled
+    ||| Mirror tiled
     ||| Full
  where
   tiled   = ResizableTall nmaster delta ratio []
@@ -272,32 +280,11 @@ avoidMaster = W.modify' $ \c -> case c of
   W.Stack t [] (r : rs) -> W.Stack t [r] rs
   _                     -> c
 
--- Expects the window name at the third place
-formatOutput :: String -> (String, String)
-formatOutput s
-  | length splitted <= 2 = (intercalate actualSeparator splitted, greeting)
-  | otherwise = (intercalate actualSeparator (init splitted), last splitted)
- where
-  splitted = splitOn weirdSeparator s
-  greeting = "Hey you, you're finally awake..."
-
-outputLogger :: Handle -> Handle -> String -> IO ()
-outputLogger topBar bottomBar output = do
-  let (topOutput, bottomOutput) = formatOutput output
-  hPutStrLn topBar    topOutput
-  hPutStrLn bottomBar bottomOutput
-
--- Well... this is a hack
-weirdSeparator :: String
-weirdSeparator = ",;.#"
-
-actualSeparator :: String
-actualSeparator = "|"
-
 spawnXMobar :: String -> IO Handle
-spawnXMobar location = spawnPipe xmobarCommand
+spawnXMobar = spawnPipe . getXmobarCommand
+
+getXmobarCommand location = prefix ++ location ++ ".hs"
  where
-  xmobarCommand = prefix ++ location ++ ".hs"
   prefix =
     "xmobar -x 0"
       ++ " -B "
@@ -306,28 +293,141 @@ spawnXMobar location = spawnPipe xmobarCommand
       ++ wrap "\"" "\"" fgColor
       ++ " $HOME/.xmonad/app/xmobar_"
 
+greeter :: Logger
+greeter = return $ Just  "Hey you, you're finally awake..."
 
-privateConfig = go <$> spawnXMobar "top" <*> spawnXMobar "bottom"
- where
-  go xmproc_top xmproc_bottom =
-    let bar = def { ppOutput          = outputLogger xmproc_top xmproc_bottom
-                  , ppTitle           = shorten 50
-                  , ppCurrent         = xmobarBorder "Bottom" fgColor 4
-                  , ppUrgent          = xmobarBorder "Bottom" "#CD3C66" 4
-                  , ppHiddenNoWindows = xmobarColor "#98a0b3" ""
-                  , ppSep             = weirdSeparator
-                  }
-    in  ewmh $ kde4Config
-          { manageHook = manageDocks <+> myManageHook <+> manageHook kde4Config
-          , modMask            = myModMask
-          , workspaces         = myWorkspaces
-          , mouseBindings      = myMouseBindings
-          , keys               = \c -> myKeys c `M.union` keys kde4Config c
-          , layoutHook         = myLayout
-          , handleEventHook    = handleEventHook kde4Config -- <+> fullscreenEventHook
-          , focusedBorderColor = bgColor
-          , normalBorderColor  = fgColor
-          , logHook            = dynamicLogWithPP bar
-                                            -- , startupHook        = spawner ["stalonetray", "pkill stalonetray", "stalonetray"]
-                                              -- ["pkill stalonetray", "stalonetray", "redshift-gtk", "nm-applet", "volumeicon"]
-          }
+logTitleOrGreet :: Logger
+logTitleOrGreet = do
+  maybeTitle <- logTitle
+  case maybeTitle of
+    Nothing -> greeter
+    Just xs -> return . Just $ shorten 50 xs
+
+bottomBarPP :: PP
+bottomBarPP = def { ppOrder = \(_ : _ : _ : extras) -> extras, ppExtras = [logTitleOrGreet] }
+
+windowedFullscreenFixEventHook :: Event -> X All
+windowedFullscreenFixEventHook (ClientMessageEvent _ _ _ dpy win typ (_ : dats))
+  = do
+    wmstate    <- getAtom "_NET_WM_STATE"
+    fullscreen <- getAtom "_NET_WM_STATE_FULLSCREEN"
+    when (typ == wmstate && fromIntegral fullscreen `elem` dats) $ do
+      withWindowAttributes dpy win $ \attrs -> liftIO $ resizeWindow
+        dpy
+        win
+        (fromIntegral $ wa_width attrs - 1)
+        (fromIntegral $ wa_height attrs)
+      withWindowAttributes dpy win $ \attrs -> liftIO $ resizeWindow
+        dpy
+        win
+        (fromIntegral $ wa_width attrs + 1)
+        (fromIntegral $ wa_height attrs)
+    return $ All True
+
+windowedFullscreenFixEventHook _ = return $ All True
+
+topBarPP :: PP
+topBarPP = def { ppCurrent         = xmobarBorder "Bottom" fgColor 4
+               , ppUrgent          = xmobarBorder "Bottom" "#CD3C66" 4
+               , ppHiddenNoWindows = xmobarColor "#98a0b3" ""
+               , ppSep             = "|"
+               , ppOrder           = \(ws : l : _ : extras) -> ws : l : extras
+               }
+
+
+xmobarTop = statusBarConf (getXmobarCommand "top") topBarPP toggleStrutsKey
+xmobarBottom =
+  statusBarConf (getXmobarCommand "bottom") bottomBarPP toggleStrutsKey
+
+
+privateConfig = combineStatusBars [xmobarTop, xmobarBottom] $ ewmh $ kde4Config
+  { manageHook         = manageDocks <+> myManageHook <+> manageHook kde4Config
+  , modMask            = myModMask
+  , workspaces         = myWorkspaces
+  , mouseBindings      = myMouseBindings
+  , keys               = \c -> myKeys c `M.union` keys kde4Config c
+  , layoutHook         = myLayout
+  , handleEventHook    = handleEventHook kde4Config
+                           <+> windowedFullscreenFixEventHook
+  , focusedBorderColor = fgColor
+  , normalBorderColor  = bgColor
+  , terminal           = "termite"
+  }
+
+
+-------- Stuff for PRs
+
+toggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
+toggleStrutsKey XConfig{modMask = modm} = (modm, xK_b )
+
+data StatusBarConf = StatusBarConf { logToDocks :: X ()
+                                   , startDocks :: X ()
+                                   , keyToggle :: XConfig Layout -> (KeyMask, KeySym)
+                                   , toggleAction :: X ()}
+
+instance Default StatusBarConf where
+  def = StatusBarConf { logToDocks = def
+                      , startDocks = def
+                      , keyToggle = toggleStrutsKey
+                      , toggleAction = sendMessage ToggleStruts
+                      }
+
+combineConfsWithAction
+  :: (XConfig Layout -> (KeyMask, KeySym))
+  -> X ()
+  -> [StatusBarConf]
+  -> StatusBarConf
+combineConfsWithAction k action confs = StatusBarConf
+  { logToDocks   = mapM_ logToDocks confs
+  , startDocks   = mapM_ startDocks confs
+  , keyToggle    = k
+  , toggleAction = action
+  }
+combineConfs
+  :: [StatusBarConf]
+  -> StatusBarConf
+combineConfs = combineConfsWithAction toggleStrutsKey (sendMessage ToggleStruts)
+
+
+combineStatusBars :: LayoutClass l Window
+                  => [IO StatusBarConf]
+                  -> XConfig l
+                  -> IO (XConfig (ModifiedLayout AvoidStruts l))
+
+combineStatusBars statusBarConfs conf =
+  sequence statusBarConfs >>= flip makeStatusBar' conf . combineConfs
+
+makeStatusBar' :: LayoutClass l Window
+               => StatusBarConf
+               -> XConfig l
+               -> IO (XConfig (ModifiedLayout AvoidStruts l))
+makeStatusBar' sbconf conf = pure $ docks $ conf
+  { layoutHook = avoidStruts (layoutHook conf)
+  , logHook = logHook conf *> logToDocks sbconf
+  , keys = (<>) <$> keys' <*> keys conf
+  , startupHook = startupHook conf *> startDocks sbconf
+  }
+  where
+    keys' :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
+    keys' = (`M.singleton` toggleAction sbconf) . keyToggle sbconf
+
+statusBarConf
+  :: String    -- ^ The command line to launch the status bar
+  -> PP        -- ^ The pretty printing options
+  -> (XConfig Layout -> (KeyMask, KeySym))
+                       -- ^ The desired key binding to toggle bar visibility
+  -> IO StatusBarConf
+statusBarConf cmd pp k = do
+  h <- spawnPipe cmd
+  return $ def { logToDocks = dynamicLogWithPP (pp { ppOutput = hPutStrLn h })
+               , keyToggle  = k
+               }
+
+statusBar :: LayoutClass l Window
+          => String    -- ^ The command line to launch the status bar
+          -> PP        -- ^ The pretty printing options
+          -> (XConfig Layout -> (KeyMask, KeySym))
+                       -- ^ The desired key binding to toggle bar visibility
+          -> XConfig l -- ^ The base config
+          -> IO (XConfig (ModifiedLayout AvoidStruts l))
+statusBar cmd pp k conf = statusBarConf cmd pp k >>= flip makeStatusBar' conf

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8752138c605f67c2e1a91ed0d817080aa14436bba9ca5b61adf415d0100a3b32
+-- hash: 7f750efdd0b16ec29682992251f335e8a016bd0dbec0cf6a62452774e1e1d55e
 
 name:           xmonad-private
 version:        0.0.0
@@ -26,6 +26,7 @@ library
     , process
     , split
     , unix
+    , utf8-string
     , xmobar
     , xmonad
     , xmonad-contrib
@@ -44,6 +45,7 @@ executable xmonad-private
     , process
     , split
     , unix
+    , utf8-string
     , xmobar
     , xmonad
     , xmonad-contrib

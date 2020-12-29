@@ -12,49 +12,49 @@ packages:
   original:
     hackage: netlink-1.1.1.0@sha256:d83424b5ba9921191449e4b1f53c7cba7f4375f2c55a9b737c77e982e1f40d00,3689
 - completed:
+    size: 72803
+    url: https://github.com/xmonad/xmonad/archive/master.tar.gz
     name: xmonad
     version: '0.15'
-    git: https://github.com/xmonad/xmonad.git
+    sha256: 41e935a66e41b5d8ad35409b5293aed2d20a787df75abbe1a94bad056cdc9d8c
     pantry-tree:
-      size: 2978
-      sha256: 2a985a0f8ba5ab8f6d03551e5407858fec4f29b322c560e8f67833ed46e6c81e
-    commit: c3e032e08e51a41140f63fc37aa9b45d80f3d6b4
+      size: 2994
+      sha256: 8aca864cddc4b75fba1e9e8d76ebb2158bbf075a9b9132719c77dc63c9e69316
   original:
-    git: https://github.com/xmonad/xmonad.git
-    commit: c3e032e08e51a41140f63fc37aa9b45d80f3d6b4
+    url: https://github.com/xmonad/xmonad/archive/master.tar.gz
 - completed:
-    name: xmobar
-    version: '0.37'
-    git: https://github.com/jaor/xmobar.git
-    pantry-tree:
-      size: 7175
-      sha256: 0253b836b60441b251e325e52ebf906feca870e2af277a36a5760b687fe60845
-    commit: a071c2a49d0804e410cdc3aeb9c49b622c9a416a
-  original:
-    git: https://github.com/jaor/xmobar.git
-    commit: a071c2a49d0804e410cdc3aeb9c49b622c9a416a
-- completed:
+    size: 581952
+    url: https://github.com/xmonad/xmonad-contrib/archive/master.tar.gz
     name: xmonad-contrib
     version: '0.16'
-    git: https://github.com/xmonad/xmonad-contrib.git
+    sha256: 4a2730c875b2c95b1a6dcd75a0c5fbca31215e3553230a93d789051c3df293d8
     pantry-tree:
-      size: 21141
-      sha256: 02345145d5a058de0236891f332c911d4c63041840a390b2c8049d0418d7c2ee
-    commit: f271d59c345ed9fbd3ec02de98f69990b57fbdba
+      size: 21457
+      sha256: 7645f92f59a94fc385fed56b8a1117c1e66879ffcf92e1ea305d6bd47c82df67
   original:
-    git: https://github.com/xmonad/xmonad-contrib.git
-    commit: f271d59c345ed9fbd3ec02de98f69990b57fbdba
+    url: https://github.com/xmonad/xmonad-contrib/archive/master.tar.gz
 - completed:
+    size: 160559
+    url: https://github.com/xmonad/x11/archive/master.tar.gz
     name: X11
     version: 1.9.2
-    git: https://github.com/xmonad/X11.git
+    sha256: 6ae7cae2916fca7b5b029dc44fe44a09ccb958eaacd1693444c9d9044a291356
     pantry-tree:
       size: 3621
       sha256: 52f4f3246aee0257cb3016d32300e3e8226e2f8e351f1df501847981e4819fb9
-    commit: 93f8ba305d72dfe44c440aba05dfecbeb1d7d74a
   original:
-    git: https://github.com/xmonad/X11.git
-    commit: 93f8ba305d72dfe44c440aba05dfecbeb1d7d74a
+    url: https://github.com/xmonad/x11/archive/master.tar.gz
+- completed:
+    size: 195385
+    url: https://github.com/jaor/xmobar/archive/master.tar.gz
+    name: xmobar
+    version: '0.37'
+    sha256: 62143a67bcc880aab29d7cba4966c5517a622851fd8882e288fc0bba251b43da
+    pantry-tree:
+      size: 7425
+      sha256: 7506e779205012efa2838e8de2f1ebaeb9429eee99ddbfc9341610b3055d9875
+  original:
+    url: https://github.com/jaor/xmobar/archive/master.tar.gz
 snapshots:
 - completed:
     size: 532832

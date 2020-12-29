@@ -1,8 +1,8 @@
 module Main where
 
-import           Config (privateConfig)
-import           XMonad (xmonad)
+import           Config
+import           XMonad                         ( xmonad )
 
 
 main :: IO ()
-main = privateConfig >>= xmonad
+main = xmonad =<< privateConfig

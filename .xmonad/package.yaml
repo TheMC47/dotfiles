@@ -12,6 +12,7 @@ dependencies:
     - process
     - unix
     - split
+    - utf8-string
 
 library:
     source-dirs: src

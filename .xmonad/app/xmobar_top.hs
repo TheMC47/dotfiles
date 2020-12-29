@@ -21,7 +21,7 @@ Config {
                     , "--High"     , "77"      -- units: %
                     -- , "--low"      , "#26734D"
                     -- , "--normal"   , "#CC5200"
-                    , "--high"     , "#CD3C66"
+                    , "--high"     , "#BF616A"
                     , "--ppad"      , "3"
                     , "--width"     , "3"
                     , "--maxtwidth" , "4"
@@ -29,20 +29,17 @@ Config {
                     , "--used-icon-pattern" , "<icon=ram/ram_%%.xpm/>"
                     ] 10
                , Run Date "%a %b %_d <fn=1></fn> %H:%M" "date" 10
-               , Run Battery [ "--template"  , "<leftipat> <acstatus>"
+               , Run Battery [ "--template"  , "<leftipat> <left>% <timeleft>"
                      , "--Low"       , "20"      -- units: %
                      , "--High"      , "90"      -- units: %
-                     , "--low"       , "#CD3C66"
-                     -- , "--normal"    , "#CC5200"
-                     , "--high"      , "#26734D"
+                     , "--low"       , "#BF616A"
+                     , "--normal"    , "#D8DEE9"
+                     , "--high"      , "#A3BE8C"
                      , "--maxtwidth" , "10"
                      , "--"
                      , "--on-icon-pattern"   , "<icon=battery/on/battery_on_%%.xpm/>"
                      , "--off-icon-pattern"  , "<icon=battery/off/battery_off_%%.xpm/>"
                      , "--idle-icon-pattern" , "<icon=battery/idle/battery_idle_%%.xpm/>"
-                     , "-o" , "<left><fc=#263640>%</fc> <timeleft>" -- discharging status
-                     , "-O" , "<left><fc=#263640>% <timeleft></fc>" -- plugged in status
-                     , "-i" , "<fc=#707880>IDLE</fc>"               -- charged status
                      , "-A" , "15"
                      , "-a", "notify-send -u critical 'Battery running out!'"
                      ] 50
