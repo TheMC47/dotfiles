@@ -44,6 +44,7 @@ Config {
                      , "-a", "notify-send -u critical 'Battery running out!'"
                      ] 50
                , Run UnsafeStdinReader
+               -- , Run UnsafeXPropertyLog "_XMONAD_LOG_TOP"
                ]
   , sepChar = "%"
   , alignSep = "}{"

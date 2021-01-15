@@ -23,16 +23,16 @@ packages:
   original:
     url: https://github.com/xmonad/xmonad/archive/master.tar.gz
 - completed:
-    size: 581952
-    url: https://github.com/xmonad/xmonad-contrib/archive/master.tar.gz
+    size: 589828
+    url: https://github.com/TheMC47/xmonad-contrib/archive/dee157e.tar.gz
     name: xmonad-contrib
     version: '0.16'
-    sha256: 4a2730c875b2c95b1a6dcd75a0c5fbca31215e3553230a93d789051c3df293d8
+    sha256: 0779683ee262ece9dfe340d5964953eb656dadb2d3eea3f7706715e3005f96ef
     pantry-tree:
-      size: 21457
-      sha256: 7645f92f59a94fc385fed56b8a1117c1e66879ffcf92e1ea305d6bd47c82df67
+      size: 21580
+      sha256: 8dd98cbff7329893476a7c3b597ffea8032eaeaeac6c6964c5721a2b9cb20424
   original:
-    url: https://github.com/xmonad/xmonad-contrib/archive/master.tar.gz
+    url: https://github.com/TheMC47/xmonad-contrib/archive/dee157e.tar.gz
 - completed:
     size: 160559
     url: https://github.com/xmonad/x11/archive/master.tar.gz

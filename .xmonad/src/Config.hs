@@ -7,13 +7,11 @@ import           ColorScheme
 import qualified Data.Map                      as M
 import           Graphics.X11.ExtraTypes.XF86
 import           System.IO
-import           Control.Monad                  ( when )
 import           XMonad
 import           XMonad.Config.Kde
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDocks
-import           Data.Monoid                    ( All(All) )
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Layout.Gaps
 import           XMonad.Layout.MultiToggle
@@ -21,12 +19,12 @@ import           XMonad.Layout.MultiToggle.Instances
 import           XMonad.Layout.NoBorders
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.Spacing
-import           XMonad.Layout.LayoutModifier
 import qualified XMonad.StackSet               as W
 import           XMonad.Util.Run
 import           XMonad.Util.Loggers
-
-
+-- For chromium
+import           XMonad.Util.Hacks              ( windowedFullscreenFixEventHook
+                                                )
 
 myModMask :: KeyMask
 myModMask = mod4Mask
@@ -222,24 +220,22 @@ myMouseBindings XConfig { XMonad.modMask = modm } = M.fromList
 -- Since gaps and spacing are enabled, this is a little different than the typical answer you  find online
 doFullScreen :: X ()
 doFullScreen = do
-  sendMessage $ Toggle FULL
+  sendMessage $ Toggle NBFULL
   doCollapse
 
-doCollapse :: X()
+doCollapse :: X ()
 doCollapse = do
   sendMessage ToggleStruts
-  toggleScreenSpacingEnabled
+  toggleWindowSpacingEnabled
   sendMessage ToggleGaps
 
 myLayout =
   avoidStruts
-    .   smartBorders -- imporvments
-    .   spacingRaw True (Border 0 10 10 10) True (Border 5 5 5 5) True -- between windows
+    .   spacingRaw False (Border 0 0 0 0) True (Border 10 10 10 10) True -- between windows
     .   gaps [(U, 10), (R, 10), (L, 10), (D, 10)] -- along the screen, excluding docks
-    .   mkToggle (NOBORDERS ?? FULL ?? EOT) -- toggle full screen
-    $   tiled
-    ||| Mirror tiled
-    ||| Full
+    .   mkToggle (single NBFULL) -- toggle full screen
+    $   smartBorders (tiled ||| Mirror tiled)
+    ||| noBorders Full
  where
   tiled   = ResizableTall nmaster delta ratio []
 
@@ -252,13 +248,6 @@ myLayout =
   -- Percent of screen to increment by when resizing panes
   delta   = 3 / 100
 
--- Note: If you google "Full screen support xmonad", you'd be pointed towards adding
--- a rule in the manage hook, and adding an event handler. The problem with that approach,
--- is that it isn't really flexible: sometimes I want to create that "picture-in-picture" feel
--- of youtube videos for example, without relying on third party modules (because they might not work
--- nicely with xmonad). For that reason, every application might "think" it is in fullscreen mode,
--- and change its looks, and I choose which one is in fullscreen mode with respect to the whole
--- system with mod-f. Suits me well!
 myManageHook :: ManageHook
 myManageHook = composeAll manageHooks
  where
@@ -294,7 +283,7 @@ getXmobarCommand location = prefix ++ location ++ ".hs"
       ++ " $HOME/.xmonad/app/xmobar_"
 
 greeter :: Logger
-greeter = return $ Just  "Hey you, you're finally awake..."
+greeter = return $ Just "Hey you, you're finally awake..."
 
 logTitleOrGreet :: Logger
 logTitleOrGreet = do
@@ -304,27 +293,9 @@ logTitleOrGreet = do
     Just xs -> return . Just $ shorten 50 xs
 
 bottomBarPP :: PP
-bottomBarPP = def { ppOrder = \(_ : _ : _ : extras) -> extras, ppExtras = [logTitleOrGreet] }
-
-windowedFullscreenFixEventHook :: Event -> X All
-windowedFullscreenFixEventHook (ClientMessageEvent _ _ _ dpy win typ (_ : dats))
-  = do
-    wmstate    <- getAtom "_NET_WM_STATE"
-    fullscreen <- getAtom "_NET_WM_STATE_FULLSCREEN"
-    when (typ == wmstate && fromIntegral fullscreen `elem` dats) $ do
-      withWindowAttributes dpy win $ \attrs -> liftIO $ resizeWindow
-        dpy
-        win
-        (fromIntegral $ wa_width attrs - 1)
-        (fromIntegral $ wa_height attrs)
-      withWindowAttributes dpy win $ \attrs -> liftIO $ resizeWindow
-        dpy
-        win
-        (fromIntegral $ wa_width attrs + 1)
-        (fromIntegral $ wa_height attrs)
-    return $ All True
-
-windowedFullscreenFixEventHook _ = return $ All True
+bottomBarPP = def { ppOrder  = \(_ : _ : _ : extras) -> extras
+                  , ppExtras = [logTitleOrGreet]
+                  }
 
 topBarPP :: PP
 topBarPP = def { ppCurrent         = xmobarBorder "Bottom" fgColor 4
@@ -334,100 +305,49 @@ topBarPP = def { ppCurrent         = xmobarBorder "Bottom" fgColor 4
                , ppOrder           = \(ws : l : _ : extras) -> ws : l : extras
                }
 
+mapFst :: (a -> a') -> (a, b) -> (a', b)
+mapFst f (a, b) = (f a, b)
 
-xmobarTop = statusBarConf (getXmobarCommand "top") topBarPP toggleStrutsKey
-xmobarBottom =
-  statusBarConf (getXmobarCommand "bottom") bottomBarPP toggleStrutsKey
+-- mySBConfig location = statusBarPropToConfig prop (getXmobarCommand location)
+--   where
+--     prop = "_XMONAD_LOG_" ++ map toUpper location
 
+-- myBars = map (uncurry mySBConfig) [("bottom", bottomBarPP), ("top", topBarPP)]
 
-privateConfig = combineStatusBars [xmobarTop, xmobarBottom] $ ewmh $ kde4Config
-  { manageHook         = manageDocks <+> myManageHook <+> manageHook kde4Config
-  , modMask            = myModMask
-  , workspaces         = myWorkspaces
-  , mouseBindings      = myMouseBindings
-  , keys               = \c -> myKeys c `M.union` keys kde4Config c
-  , layoutHook         = myLayout
-  , handleEventHook    = handleEventHook kde4Config
-                           <+> windowedFullscreenFixEventHook
-  , focusedBorderColor = fgColor
-  , normalBorderColor  = bgColor
-  , terminal           = "termite"
-  }
+-- myBars = [mySBConfig "top" topBarPP, statusBarHandleConfig (getXmobarCommand "bottom") bottomBarPP]
 
+myBars = map (uncurry statusBarHandleConfig. mapFst getXmobarCommand) [("bottom", bottomBarPP), ("top", topBarPP)]
 
--------- Stuff for PRs
+-- mySBCombinator = ( >>=). makeStatusBar
 
-toggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
-toggleStrutsKey XConfig{modMask = modm} = (modm, xK_b )
+-- FUCK YES IT WORKs.
+-- >>> :t makeStatusBar
+-- makeStatusBar
+--   :: LayoutClass l Window =>
+--      XConfig l
+--      -> StatusBarConfig
+--      -> IO
+--           (XConfig
+--              (XMonad.Layout.LayoutModifier.ModifiedLayout AvoidStruts l))
 
-data StatusBarConf = StatusBarConf { logToDocks :: X ()
-                                   , startDocks :: X ()
-                                   , keyToggle :: XConfig Layout -> (KeyMask, KeySym)
-                                   , toggleAction :: X ()}
+mySB' sb conf =  makeStatusBar conf =<< sb
 
-instance Default StatusBarConf where
-  def = StatusBarConf { logToDocks = def
-                      , startDocks = def
-                      , keyToggle = toggleStrutsKey
-                      , toggleAction = sendMessage ToggleStruts
-                      }
-
-combineConfsWithAction
-  :: (XConfig Layout -> (KeyMask, KeySym))
-  -> X ()
-  -> [StatusBarConf]
-  -> StatusBarConf
-combineConfsWithAction k action confs = StatusBarConf
-  { logToDocks   = mapM_ logToDocks confs
-  , startDocks   = mapM_ startDocks confs
-  , keyToggle    = k
-  , toggleAction = action
-  }
-combineConfs
-  :: [StatusBarConf]
-  -> StatusBarConf
-combineConfs = combineConfsWithAction toggleStrutsKey (sendMessage ToggleStruts)
+privateConfig =
+  mySB' (withAction doCollapse . combineSBConfs <$> sequence myBars)
+    . ewmh
+    $ kde4Config
+        { manageHook = manageDocks <+> myManageHook <+> manageHook kde4Config
+        , modMask            = mod4Mask
+        , workspaces         = myWorkspaces
+        , mouseBindings      = myMouseBindings
+        , keys               = \c -> myKeys c `M.union` keys kde4Config c
+        , layoutHook         = myLayout
+        , handleEventHook    = handleEventHook kde4Config
+                                 <+> windowedFullscreenFixEventHook
+        , focusedBorderColor = fgColor
+        , normalBorderColor  = bgColor
+        , terminal           = "termite"
+        }
 
 
-combineStatusBars :: LayoutClass l Window
-                  => [IO StatusBarConf]
-                  -> XConfig l
-                  -> IO (XConfig (ModifiedLayout AvoidStruts l))
-
-combineStatusBars statusBarConfs conf =
-  sequence statusBarConfs >>= flip makeStatusBar' conf . combineConfs
-
-makeStatusBar' :: LayoutClass l Window
-               => StatusBarConf
-               -> XConfig l
-               -> IO (XConfig (ModifiedLayout AvoidStruts l))
-makeStatusBar' sbconf conf = pure $ docks $ conf
-  { layoutHook = avoidStruts (layoutHook conf)
-  , logHook = logHook conf *> logToDocks sbconf
-  , keys = (<>) <$> keys' <*> keys conf
-  , startupHook = startupHook conf *> startDocks sbconf
-  }
-  where
-    keys' :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
-    keys' = (`M.singleton` toggleAction sbconf) . keyToggle sbconf
-
-statusBarConf
-  :: String    -- ^ The command line to launch the status bar
-  -> PP        -- ^ The pretty printing options
-  -> (XConfig Layout -> (KeyMask, KeySym))
-                       -- ^ The desired key binding to toggle bar visibility
-  -> IO StatusBarConf
-statusBarConf cmd pp k = do
-  h <- spawnPipe cmd
-  return $ def { logToDocks = dynamicLogWithPP (pp { ppOutput = hPutStrLn h })
-               , keyToggle  = k
-               }
-
-statusBar :: LayoutClass l Window
-          => String    -- ^ The command line to launch the status bar
-          -> PP        -- ^ The pretty printing options
-          -> (XConfig Layout -> (KeyMask, KeySym))
-                       -- ^ The desired key binding to toggle bar visibility
-          -> XConfig l -- ^ The base config
-          -> IO (XConfig (ModifiedLayout AvoidStruts l))
-statusBar cmd pp k conf = statusBarConf cmd pp k >>= flip makeStatusBar' conf
+-- f :: IO StatusBar -> IO Config -> IO Config
