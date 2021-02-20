@@ -5,4 +5,4 @@ import           XMonad                         ( xmonad )
 
 
 main :: IO ()
-main = xmonad =<< privateConfig
+main = xmonad privateConfig

@@ -9,4 +9,5 @@ Config {
   , sepChar = "%"
   , alignSep = "}{"
   , template = "<action=`qdbus org.kde.ksmserver /KSMServer org.kde.KSMServerInterface.logout -1 -1 -1` button=1><fn=1></fn></action>} %StdinReader%{"
+  , overrideRedirect = False
   }
