@@ -322,8 +322,6 @@ getXMobarCommand location (S screen) = prefix ++ location ++ ".hs"
       ++ wrap "\"" "\"" fgColor
       ++ " $HOME/.xmonad/app/xmobar_"
 
-
-
 -- | A helper datatype for XMobar
 data XMobar = XMobar {location :: String, screen :: ScreenId, pp :: PP}
 
@@ -336,7 +334,6 @@ onWorkspaces f pp@(PP {..}) = pp { ppCurrent         = ppCurrent . f
                                  }
 
 -- Main Screen
--- bottomMainPP,
 topMainPP :: PP
 
 topMainPP = def
@@ -348,9 +345,6 @@ topMainPP = def
   , ppExtras          = [logLayoutOnScreen 0, shortenL 50 $ logTitleOrGreet]
   , ppOrder           = \(ws : _ : _ : extras) -> ws : extras
   }
--- bottomMainPP = def { ppOrder  = \(_ : _ : _ : extras) -> extras
---                    , ppExtras = [logTitleOrGreet]
---                    }
 
 -- Secondary screens
 secondaryBar :: ScreenId -> XMobar
@@ -370,8 +364,7 @@ mySB XMobar {..} = statusBarHandleConfig (getXMobarCommand location screen) pp
 
 topXMobar =
   statusBarHandleConfig' (getXMobarCommand "top" 0) (clickablePP topMainPP)
--- bottomXMobar = mySB $ XMobar "bottom" 0 bottomMainPP
 
 barSpawner :: ScreenId -> IO StatusBarConfig
-barSpawner 0 = topXMobar -- <> bottomXMobar
+barSpawner 0 = topXMobar
 barSpawner n = mySB $ secondaryBar n
