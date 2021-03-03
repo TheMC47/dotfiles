@@ -1,16 +1,14 @@
 configuration {
 	display-drun:    "Run";
-	display-run:     "Execute";
 	display-window:  "Window";
 	show-icons:      true;
 	sidebar-mode:    true;
+  theme: "nord";
 }
 * {
-  background-color: #B4D7F570;
-  border-color: #2e343f;
-  text-color: #262d40;
   spacing: 0;
   width: 512;
+  font: "Source Code Pro 14";
 }
 
 inputbar {
@@ -28,10 +26,8 @@ window {
 }
 
 textbox {
-  background-color: #2e343f20;
   border: 0 0 1px 0;
   border-radius: 10px;
-  border-color: #282C33;
   padding: 8px 16px;
 }
 
@@ -48,8 +44,4 @@ listview {
 element {
   border: 0 0 1px 0;
   padding: 16px;
-}
-
-element selected {
-  background-color: #d1cbc022;
 }
