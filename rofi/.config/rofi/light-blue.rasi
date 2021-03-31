@@ -1,0 +1,55 @@
+configuration {
+	display-drun:    "Run";
+	display-run:     "Execute";
+	display-window:  "Window";
+	show-icons:      true;
+	sidebar-mode:    true;
+}
+* {
+  background-color: #B4D7F570;
+  border-color: #2e343f;
+  text-color: #262d40;
+  spacing: 0;
+  width: 512;
+}
+
+inputbar {
+  border: 0 0 1px 0;
+  children: [prompt,entry];
+}
+
+prompt {
+  padding: 16px;
+  border: 0 1px 0 0;
+}
+
+window {
+    border-radius: 10px;
+}
+
+textbox {
+  background-color: #2e343f20;
+  border: 0 0 1px 0;
+  border-radius: 10px;
+  border-color: #282C33;
+  padding: 8px 16px;
+}
+
+entry {
+  padding: 16px;
+}
+
+listview {
+  cycle: false;
+  margin: 0 0 -1px 0;
+  scrollbar: false;
+}
+
+element {
+  border: 0 0 1px 0;
+  padding: 16px;
+}
+
+element selected {
+  background-color: #d1cbc022;
+}

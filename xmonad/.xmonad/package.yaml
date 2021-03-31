@@ -1,0 +1,28 @@
+name:
+    xmonad-private
+
+dependencies:
+    - base >= 4.7 && < 5
+    - xmonad
+    - xmonad-contrib
+    - X11
+    - containers
+    - flow
+    - process
+    - unix
+    - split
+    - utf8-string
+
+library:
+    source-dirs: .
+
+executables:
+  xmonad-private:
+    main:              xmonad.hs
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    dependencies:
+    - xmonad-private

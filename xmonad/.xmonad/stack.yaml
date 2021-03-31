@@ -1,0 +1,13 @@
+resolver:
+  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/23.yaml
+
+packages:
+  - .
+  # - /home/yecinem/xmonad-contrib/
+extra-deps:
+  - github: xmonad/xmonad
+    commit: master
+  - git: /home/yecinem/xmonad-contrib/
+    commit: ac920b7470eb45915c7b353fad66fe570c4cb2a6
+  - github: xmonad/x11
+    commit: master

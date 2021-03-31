@@ -1,0 +1,6 @@
+# key: Xkey
+# name: XMonad Key Binding
+# --
+, ( (modm${1: .|. shiftMask}, xK_$2)
+  , $3
+)$0

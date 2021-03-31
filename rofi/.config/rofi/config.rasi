@@ -1,0 +1,47 @@
+configuration {
+	display-drun:    "Run";
+	display-window:  "Window";
+	show-icons:      true;
+	sidebar-mode:    true;
+  theme: "nord";
+}
+* {
+  spacing: 0;
+  width: 512;
+  font: "Source Code Pro 14";
+}
+
+inputbar {
+  border: 0 0 1px 0;
+  children: [prompt,entry];
+}
+
+prompt {
+  padding: 16px;
+  border: 0 1px 0 0;
+}
+
+window {
+    border-radius: 10px;
+}
+
+textbox {
+  border: 0 0 1px 0;
+  border-radius: 10px;
+  padding: 8px 16px;
+}
+
+entry {
+  padding: 16px;
+}
+
+listview {
+  cycle: false;
+  margin: 0 0 -1px 0;
+  scrollbar: false;
+}
+
+element {
+  border: 0 0 1px 0;
+  padding: 16px;
+}
