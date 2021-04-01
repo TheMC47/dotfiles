@@ -82,7 +82,7 @@ main =
   emacsKeys = makeSubmap
     "e"
     (spawn emacs)
-    [ ("t"  , spawn . withEmacs $ "org/todos.org")
+    [ ("t"  , spawn . withEmacs . withTitle "TODOs" $ "org/todos.org")
     , ("o"  , orgPrompt myXPConfig "TODO" "org/todos.org")
     , ("S-o", orgPromptPrimary myXPConfig "TODO" "org/todos.org")
     ]
@@ -92,7 +92,7 @@ main =
 -- list with @M-C-k@
 makeSubmap :: String -> X () -> [(String, X ())] -> [(String, X ())]
 makeSubmap k action ks =
-  ("M-" <> k, action) : map (first (("M-C-" <> k <> " ") <>)) ks
+  ("M-" <> k, action) : map (first (("M-S-" <> k <> " ") <>)) ks
 
 
 myKeys :: XConfig l -> M.Map (KeyMask, KeySym) (X ())
@@ -156,9 +156,12 @@ myWorkspaces = zipWith -- euum. yeah. I know. overengineered
 --------
 
 emacs :: String
-emacs = "emacsclient -create-frame --no-wait "
+emacs = "emacsclient -a '' -create-frame --no-wait "
 
-withEmacs :: String -> String
+withTitle :: String -> ShowS
+withTitle t = (("-F '(quote (name . \"" <> t <> "\"))' ") <>)
+
+withEmacs :: ShowS
 withEmacs = (emacs <>)
 
 
