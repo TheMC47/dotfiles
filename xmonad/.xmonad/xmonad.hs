@@ -30,6 +30,7 @@ import           XMonad.Util.ClickableWorkspaces
 import           XMonad.Util.EZConfig
 import           XMonad.Util.Hacks
 import           XMonad.Util.Loggers
+import           XMonad.Util.NamedScratchpad
 
 myBgColor = "#2E3440"
 myFgColor = "#D8DEE9"
@@ -43,18 +44,18 @@ main =
     .                 withUrgencyHook NoUrgencyHook
     -- . ewmh' def { fullscreen = True, workspaceListSort = pure reverse }
     .                 ewmh
-    $                 def { manageHook         = myManageHook
-                          , modMask            = myModMask
-                          , workspaces         = myWorkspaces
-                          , keys               = myKeys <> keys def
-                          , layoutHook         = myLayout
-                          , handleEventHook    = windowedFullscreenFixEventHook
-                          , logHook            = updatePointer (0.5, 0.5) (0, 0)
-                          , focusedBorderColor = myFgColor
-                          , normalBorderColor  = myBgColor
-                          , terminal           = myTerminal
-                          , startupHook        = spawn "pkill xembedsniproxy"
-                          }
+    $ def { manageHook = myManageHook <> namedScratchpadManageHook scratchpads
+          , modMask            = myModMask
+          , workspaces         = myWorkspaces
+          , keys               = myKeys <> keys def
+          , layoutHook         = myLayout
+          , handleEventHook    = windowedFullscreenFixEventHook
+          , logHook            = updatePointer (0.5, 0.5) (0, 0)
+          , focusedBorderColor = myFgColor
+          , normalBorderColor  = myBgColor
+          , terminal           = myTerminal
+          , startupHook        = spawn "pkill xembedsniproxy"
+          }
     `additionalKeysP` (  [ ("M-<Return>", spawn myTerminal)
                          , ("M-d"       , rofi)
                          , ("M-b"       , toggleCollapse)
@@ -82,7 +83,7 @@ main =
   emacsKeys = makeSubmap
     "e"
     (spawn emacs)
-    [ ("t"  , spawn . withEmacs . withTitle "TODOs" $ "org/todos.org")
+    [ ("t"  , namedScratchpadAction scratchpads "todos")
     , ("o"  , orgPrompt myXPConfig "TODO" "org/todos.org")
     , ("S-o", orgPromptPrimary myXPConfig "TODO" "org/todos.org")
     ]
@@ -150,6 +151,20 @@ myWorkspaces = zipWith -- euum. yeah. I know. overengineered
   , -- 
     "\xf11b \xf236" --  
   ]
+
+--------
+--- Scratchpads
+--------
+
+scratchpads =
+  [ NS "todos"
+       todoCommand
+       (title =? todoTitle)
+       (customFloating $ W.RationalRect (1 / 6) 0 (2 / 3) (1 / 3))
+  ]
+ where
+  todoTitle   = "TODOs"
+  todoCommand = withEmacs . withTitle todoTitle $ "org/todos.org"
 
 --------
 --- Emacs
@@ -257,7 +272,7 @@ barSpawner :: ScreenId -> IO StatusBarConfig
 barSpawner 0 =
   statusBarProp
       "xmobar top"
-      (clickablePP def
+      (clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $ def
         { ppCurrent         = xmobarBorder "Bottom" myFgColor 4
         , ppUrgent          = xmobarBorder "Bottom" "#CD3C66" 4
         , ppHiddenNoWindows = xmobarColor "#98a0b3" "#2E3440:0"
