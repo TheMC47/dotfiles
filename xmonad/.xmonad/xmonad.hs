@@ -4,6 +4,7 @@
 import qualified Data.Map                      as M
 import           XMonad
 import           XMonad.Actions.CopyWindow
+import           XMonad.Actions.UpdatePointer
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.ManageDocks
@@ -43,6 +44,7 @@ main =
                           , keys               = myKeys <> keys def
                           , layoutHook         = myLayout
                           , handleEventHook    = windowedFullscreenFixEventHook
+                          , logHook            = updatePointer (0.5, 0.5) (0, 0)
                           , focusedBorderColor = fgColor
                           , normalBorderColor  = bgColor
                           , terminal           = myTerminal
