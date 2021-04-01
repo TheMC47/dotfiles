@@ -1,6 +1,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 
+import           Data.Bifunctor
 import qualified Data.Map                      as M
 import           XMonad
 import           XMonad.Actions.CopyWindow
@@ -54,32 +55,46 @@ main =
                           , terminal           = myTerminal
                           , startupHook        = spawn "pkill xembedsniproxy"
                           }
-    `additionalKeysP` [ ("M-<Return>", spawn myTerminal)
-                      , ("M-d"       , rofi)
-                      , ("M-b"       , toggleCollapse)
-                      , ("M-f"       , toggleFullScreen)
-                      , ("M-S-q"     , kill)
-                      , ("M-S-x"     , logout)
-                      , ("M-q"       , xmonadRecompile)
-                      , ("M-e", spawn "emacsclient -create-frame --no-wait")
-                      , ( "M-S-e"
-                        , spawn "/home/yecinem/.emacs.d/bin/doom everywhere"
-                        )
-                      , ("M-z +", incWindowSpacing 10)
-                      , ("M-c"  , windows copyToAll)
-                      , ("M-v"  , killAllOtherCopies)
-                      , ( "M-a 6"
-                        , withFocused (broadcastMessage . FixRatio (16 / 9))
-                          >> refresh
-                        )
-                      , ( "M-a r"
-                        , withFocused (broadcastMessage . ResetRatio) >> refresh
-                        )
+    `additionalKeysP` (  [ ("M-<Return>", spawn myTerminal)
+                         , ("M-d"       , rofi)
+                         , ("M-b"       , toggleCollapse)
+                         , ("M-f"       , toggleFullScreen)
+                         , ("M-S-q"     , kill)
+                         , ("M-S-x"     , logout)
+                         , ("M-q"       , xmonadRecompile)
+                         , ("M-z +"     , incWindowSpacing 10)
+                         , ("M-c"       , windows copyToAll)
+                         , ("M-v"       , killAllOtherCopies)
+                         , ( "M-a 6"
+                           , withFocused (broadcastMessage . FixRatio (16 / 9))
+                             >> refresh
+                           )
+                         , ( "M-a r"
+                           , withFocused (broadcastMessage . ResetRatio)
+                             >> refresh
+                           )
                       -- Prompts
-                      , ("M-x", xmonadPrompt myXPConfig)
-                      , ("M-o", orgPrompt myXPConfig "TODO" "org/todos.org")
-                      , ("M-C-o", orgPromptPrimary myXPConfig "TODO" "org/todos.org")
-                      ]
+                         , ("M-x", xmonadPrompt myXPConfig)
+                         ]
+                      ++ emacsKeys
+                      )
+ where
+  emacsKeys = makeSubmap
+    "e"
+    (spawn emacs)
+    [ ("t"  , spawn . withEmacs $ "org/todos.org")
+    , ("o"  , orgPrompt myXPConfig "TODO" "org/todos.org")
+    , ("S-o", orgPromptPrimary myXPConfig "TODO" "org/todos.org")
+    ]
+
+-- | A small helper function to make submaps. For the given key k,
+-- it binds @M-k@ to the given action, and prefixes the keys in the
+-- list with @M-C-k@
+makeSubmap :: String -> X () -> [(String, X ())] -> [(String, X ())]
+makeSubmap k action ks =
+  ("M-" <> k, action) : map (first (("M-C-" <> k <> " ") <>)) ks
+
+
 myKeys :: XConfig l -> M.Map (KeyMask, KeySym) (X ())
 myKeys XConfig {..} =
   M.fromList
@@ -135,6 +150,17 @@ myWorkspaces = zipWith -- euum. yeah. I know. overengineered
   , -- 
     "\xf11b \xf236" --  
   ]
+
+--------
+--- Emacs
+--------
+
+emacs :: String
+emacs = "emacsclient -create-frame --no-wait "
+
+withEmacs :: String -> String
+withEmacs = (emacs <>)
+
 
 ---------
 --- Actions
