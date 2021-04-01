@@ -36,7 +36,6 @@ main :: IO ()
 main =
     xmonad
         .                 withEmacs
-        .                 withMediaKeys
         .                 withStatusBars
     -- library combiators
         .                 javaHack
@@ -159,29 +158,6 @@ toggleCollapse = do
 workspaceAt :: Int -> String
 workspaceAt 0 = last myWorkspaces
 workspaceAt n = ((myWorkspaces !!) . pred) n
-
----------------------
--- Media keys
----------------------
-
-volumeCommand :: String -> X ()
-volumeCommand = spawn . ("pactl set-sink-volume @DEFAULT_SINK@ " <>)
-
-lowerVolume, raiseVolume :: Int -> X ()
-raiseVolume n = volumeCommand $ "+" <> show n <> "%"
-lowerVolume n = volumeCommand $ "-" <> show n <> "%"
-
-mute :: X ()
-mute = spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle"
-
-withMediaKeys :: XConfig l -> XConfig l
-withMediaKeys = flip
-    additionalKeysP
-    [ ("<XF86AudioRaiseVolume>", raiseVolume 10)
-    , ("<XF86AudioLowerVolume>", lowerVolume 10)
-    , ("<XF86AudioMute>"       , mute)
-    ]
-
 
 ---------------------
 -- Emacs
