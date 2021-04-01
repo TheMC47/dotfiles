@@ -6,6 +6,6 @@ extra-deps:
   - github: xmonad/xmonad
     commit: master
   - git: /home/yecinem/xmonad-contrib/
-    commit: ac920b7470eb45915c7b353fad66fe570c4cb2a6
+    commit: 3b07072f41ad5cfba243a5b04a8c884c42a8e824
   - github: xmonad/x11
     commit: master

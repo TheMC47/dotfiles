@@ -20,12 +20,12 @@ packages:
     version: '0.16'
     git: /home/yecinem/xmonad-contrib/
     pantry-tree:
-      size: 22057
-      sha256: dd3d65c161b190fe9948df4fbf3f4f07f8a2298394b688493ad0ea4829bad4f0
-    commit: ac920b7470eb45915c7b353fad66fe570c4cb2a6
+      size: 22123
+      sha256: e6c2efdc3ae36a8b2f834a8ad314d622ab5abeba5ecab04f74f91be9596fa9f3
+    commit: 3b07072f41ad5cfba243a5b04a8c884c42a8e824
   original:
     git: /home/yecinem/xmonad-contrib/
-    commit: ac920b7470eb45915c7b353fad66fe570c4cb2a6
+    commit: 3b07072f41ad5cfba243a5b04a8c884c42a8e824
 - completed:
     size: 160559
     url: https://github.com/xmonad/x11/archive/master.tar.gz

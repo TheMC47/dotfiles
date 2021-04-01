@@ -20,14 +20,18 @@ import           XMonad.Layout.NoBorders
 import           XMonad.Layout.Renamed
 import           XMonad.Layout.ResizableTile
 import           XMonad.Layout.Spacing
+import           XMonad.Prompt
+import           XMonad.Prompt.FuzzyMatch
+import           XMonad.Prompt.OrgMode
+import           XMonad.Prompt.XMonad
 import qualified XMonad.StackSet               as W
 import           XMonad.Util.ClickableWorkspaces
 import           XMonad.Util.EZConfig
 import           XMonad.Util.Hacks
 import           XMonad.Util.Loggers
 
-bgColor = "#2E3440"
-fgColor = "#D8DEE9"
+myBgColor = "#2E3440"
+myFgColor = "#D8DEE9"
 
 main :: IO ()
 main =
@@ -45,8 +49,8 @@ main =
                           , layoutHook         = myLayout
                           , handleEventHook    = windowedFullscreenFixEventHook
                           , logHook            = updatePointer (0.5, 0.5) (0, 0)
-                          , focusedBorderColor = fgColor
-                          , normalBorderColor  = bgColor
+                          , focusedBorderColor = myFgColor
+                          , normalBorderColor  = myBgColor
                           , terminal           = myTerminal
                           , startupHook        = spawn "pkill xembedsniproxy"
                           }
@@ -71,6 +75,10 @@ main =
                       , ( "M-a r"
                         , withFocused (broadcastMessage . ResetRatio) >> refresh
                         )
+                      -- Prompts
+                      , ("M-x", xmonadPrompt myXPConfig)
+                      , ("M-o", orgPrompt myXPConfig "TODO" "org/todos.org")
+                      , ("M-C-o", orgPromptPrimary myXPConfig "TODO" "org/todos.org")
                       ]
 myKeys :: XConfig l -> M.Map (KeyMask, KeySym) (X ())
 myKeys XConfig {..} =
@@ -196,12 +204,10 @@ myManageHook = mconcat manageHooks
   windowRules =
     [ [ className =? c --> doFloat | c <- floatsClasses ]
     , [ title =? t --> doFloat | t <- floatsTitles ]
-    , [ className =? c --> doIgnore | c <- ignoreClasses ]
     ]
   floatsClasses =
     ["MPlayer", "Gimp", "yakuake", "Plasma-desktop", "ksmserver", "R_x11"]
-  floatsTitles  = ["alsamixer"]
-  ignoreClasses = ["krunner"]
+  floatsTitles = ["alsamixer"]
 
 
 avoidMaster :: W.StackSet i l a s sd -> W.StackSet i l a s sd
@@ -223,7 +229,7 @@ barSpawner 0 =
   statusBarProp
       "xmobar top"
       (clickablePP def
-        { ppCurrent         = xmobarBorder "Bottom" fgColor 4
+        { ppCurrent         = xmobarBorder "Bottom" myFgColor 4
         , ppUrgent          = xmobarBorder "Bottom" "#CD3C66" 4
         , ppHiddenNoWindows = xmobarColor "#98a0b3" "#2E3440:0"
         , ppVisible         = xmobarBorder "Bottom" "#98a0b3" 1
@@ -269,3 +275,20 @@ trayerSB = staticStatusBar
     , "--margin 27"
     ]
   )
+
+---------------------
+-- Prompt
+---------------------
+myXPConfig :: XPConfig
+myXPConfig = def
+  { font            =
+    "xft:Source Code Pro:size=11:regular:antialias=true,FontAwesome:pixelsize=13"
+  , position        = Top
+  , bgColor         = myBgColor
+  , fgColor         = myFgColor
+  , bgHLight        = myFgColor
+  , fgHLight        = myBgColor
+  , borderColor     = myFgColor
+  , searchPredicate = fuzzyMatch
+  , sorter          = fuzzySort
+  }
