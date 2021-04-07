@@ -4,7 +4,6 @@
 import           Data.Bifunctor
 import qualified Data.Map                      as M
 import           XMonad
-import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.UpdatePointer
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
@@ -33,6 +32,7 @@ import           XMonad.Util.Loggers
 import           XMonad.Util.NamedScratchpad
 
 myBgColor = "#2E3440"
+
 myFgColor = "#D8DEE9"
 
 main :: IO ()
@@ -42,7 +42,7 @@ main =
     .                 dynamicSBs barSpawner
     .                 javaHack
     .                 withUrgencyHook NoUrgencyHook
-    -- . ewmh' def { fullscreen = True, workspaceListSort = pure reverse }
+    -- . ewmh' def {workspaceListSort = pure reverse }
     .                 ewmh
     $ def { manageHook = myManageHook <> namedScratchpadManageHook scratchpads
           , modMask            = myModMask
@@ -57,15 +57,15 @@ main =
           , startupHook        = spawn "pkill xembedsniproxy"
           }
     `additionalKeysP` (  [ ("M-<Return>", spawn myTerminal)
-                         , ("M-d"       , rofi)
-                         , ("M-b"       , toggleCollapse)
-                         , ("M-f"       , toggleFullScreen)
-                         , ("M-S-q"     , kill)
-                         , ("M-S-x"     , logout)
-                         , ("M-q"       , xmonadRecompile)
-                         , ("M-z +"     , incWindowSpacing 10)
-                         , ("M-c"       , windows copyToAll)
-                         , ("M-v"       , killAllOtherCopies)
+                         , ( "M-S-<Return>"
+                           , namedScratchpadAction scratchpads "dropdown-term"
+                           )
+                         , ("M-d"  , rofi)
+                         , ("M-b"  , toggleCollapse)
+                         , ("M-f"  , toggleFullScreen)
+                         , ("M-S-q", kill)
+                         , ("M-S-x", logout)
+                         , ("M-q"  , xmonadRecompile)
                          , ( "M-a 6"
                            , withFocused (broadcastMessage . FixRatio (16 / 9))
                              >> refresh
@@ -74,8 +74,9 @@ main =
                            , withFocused (broadcastMessage . ResetRatio)
                              >> refresh
                            )
-                      -- Prompts
-                         , ("M-x", xmonadPrompt myXPConfig)
+                         ,
+                            -- Prompts
+                           ("M-x", xmonadPrompt myXPConfig)
                          ]
                       ++ emacsKeys
                       )
@@ -95,15 +96,14 @@ makeSubmap :: String -> X () -> [(String, X ())] -> [(String, X ())]
 makeSubmap k action ks =
   ("M-" <> k, action) : map (first (("M-S-" <> k <> " ") <>)) ks
 
-
 myKeys :: XConfig l -> M.Map (KeyMask, KeySym) (X ())
 myKeys XConfig {..} =
   M.fromList
     $
-      --
-      -- mod-[1..9], Switch to workspace N
-      -- mod-shift-[1..9], Move client to workspace N
-      --
+    --
+    -- mod-[1..9], Switch to workspace N
+    -- mod-shift-[1..9], Move client to workspace N
+    --
        [ ((m .|. modMask, k), windows $ f i)
        | (i, k) <- zip workspaces ([xK_1 .. xK_9] ++ [xK_0])
        , (f, m) <-
@@ -124,31 +124,37 @@ myKeys XConfig {..} =
 myModMask :: KeyMask
 myModMask = mod4Mask
 
-myTerminal :: String
-myTerminal = "termite"
-
 myWorkspaces :: [String]
 myWorkspaces = zipWith -- euum. yeah. I know. overengineered
   (<>)
   (map ((<> ":") . show) [(1 :: Int) .. 10])
   [ "\xf02d"
-  , -- 
+  ,
+      -- 
     "\xf120"
-  , -- 
+  ,
+      -- 
     "\xf268"
-  , -- 
+  ,
+      -- 
     "\xf108"
-  , -- 
+  ,
+      -- 
     "\xf108"
-  , -- 
+  ,
+      -- 
     "\xf108"
-  , -- 
+  ,
+      -- 
     "\xf108"
-  , -- 
+  ,
+      -- 
     "\xf095"
-  , -- 
+  ,
+      -- 
     "\xf2dc"
-  , -- 
+  ,
+      -- 
     "\xf11b \xf236" --  
   ]
 
@@ -161,14 +167,28 @@ scratchpads =
        todoCommand
        (title =? todoTitle)
        (customFloating $ W.RationalRect (1 / 6) 0 (2 / 3) (1 / 3))
+  , NS "dropdown-term"
+       (withTerminal . withTitleT dropDownTitle $ "")
+       (title =? dropDownTitle)
+       (customFloating $ W.RationalRect (1 / 6) 0 (2 / 3) (2 / 3))
   ]
  where
-  todoTitle   = "TODOs"
-  todoCommand = withEmacs . withTitle todoTitle $ "org/todos.org"
+  todoTitle     = "TODOs"
+  todoCommand   = withEmacs . withTitle todoTitle $ "org/todos.org"
+  dropDownTitle = "Dropdown"
 
 --------
 --- Emacs
 --------
+
+myTerminal :: String
+myTerminal = "termite "
+
+withTerminal :: ShowS
+withTerminal = (myTerminal <>)
+
+withTitleT :: String -> ShowS
+withTitleT c = (("--title=" <> c <> " ") <>)
 
 emacs :: String
 emacs = "emacsclient -a '' -create-frame --no-wait "
@@ -178,7 +198,6 @@ withTitle t = (("-F '(quote (name . \"" <> t <> "\"))' ") <>)
 
 withEmacs :: ShowS
 withEmacs = (emacs <>)
-
 
 ---------
 --- Actions
@@ -194,12 +213,10 @@ rofi = spawn "rofi -m -4 -modi run,drun -show drun"
 xmonadRecompile :: X ()
 xmonadRecompile = spawn "xmonad --recompile; xmonad --restart"
 
-
 toggleFullScreen :: X ()
 toggleFullScreen = do
   sendMessage $ Toggle NBFULL
   toggleCollapse
-
 
 toggleCollapse :: X ()
 toggleCollapse = do
@@ -216,7 +233,7 @@ workspaceAt n = ((myWorkspaces !!) . pred) n
 ---------------------
 
 myLayout =
-  renamed [CutWordsLeft 2]
+  renamed [KeepWordsRight 1]
     .   avoidStruts
     .   fixedAspectRatio (0.5, 0.5)
     .   layoutHintsWithPlacement (0.5, 0.5)
@@ -253,12 +270,19 @@ myManageHook = mconcat manageHooks
     ["MPlayer", "Gimp", "yakuake", "Plasma-desktop", "ksmserver", "R_x11"]
   floatsTitles = ["alsamixer"]
 
-
 avoidMaster :: W.StackSet i l a s sd -> W.StackSet i l a s sd
 avoidMaster = W.modify' $ \c -> case c of
   W.Stack t [] (r : rs) -> W.Stack t [r] rs
   _                     -> c
 
+---------------------
+-- EWMH
+---------------------
+
+-- myActivateHook :: ManageHook
+-- myActivateHook  = composeOne [
+--   className =? "Google-chrome" <||> className =? "google-chrome" -?> doAskUrgent,
+--   pure True -?> doFocus]
 
 ---------------------
 -- Status Bars
@@ -270,20 +294,22 @@ circleSep =
 
 barSpawner :: ScreenId -> IO StatusBarConfig
 barSpawner 0 =
-  statusBarProp
-      "xmobar top"
-      (clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $ def
-        { ppCurrent         = xmobarBorder "Bottom" myFgColor 4
-        , ppUrgent          = xmobarBorder "Bottom" "#CD3C66" 4
-        , ppHiddenNoWindows = xmobarColor "#98a0b3" "#2E3440:0"
-        , ppVisible         = xmobarBorder "Bottom" "#98a0b3" 1
-        , ppSep             = circleSep
-        , ppExtras = [logLayoutOnScreen 0, shortenL 50 (logTitleOnScreen 0)]
-        , ppOrder           = \(ws : _ : _ : extras) -> ws : extras
-        }
+  pure
+      (statusBarProp
+        "xmobar top"
+        (clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $ def
+          { ppCurrent         = xmobarBorder "Bottom" myFgColor 4
+          , ppUrgent          = xmobarBorder "Bottom" "#CD3C66" 4
+          , ppHiddenNoWindows = xmobarColor "#98a0b3" "#2E3440:0"
+          , ppVisible         = xmobarBorder "Bottom" "#98a0b3" 1
+          , ppSep             = circleSep
+          , ppExtras = [logLayoutOnScreen 0, shortenL 50 (logTitleOnScreen 0)]
+          , ppOrder           = \(ws : _ : _ : extras) -> ws : extras
+          }
+        )
       )
     <> trayerSB
-barSpawner s@(S n) = statusBarPropTo
+barSpawner s@(S n) = pure $ statusBarPropTo
   customProp
   ("xmobar secondary " <> show n)
   (pure $ def
@@ -324,15 +350,14 @@ trayerSB = staticStatusBar
 -- Prompt
 ---------------------
 myXPConfig :: XPConfig
-myXPConfig = def
-  { font            =
-    "xft:Source Code Pro:size=11:regular:antialias=true,FontAwesome:pixelsize=13"
-  , position        = Top
-  , bgColor         = myBgColor
-  , fgColor         = myFgColor
-  , bgHLight        = myFgColor
-  , fgHLight        = myBgColor
-  , borderColor     = myFgColor
-  , searchPredicate = fuzzyMatch
-  , sorter          = fuzzySort
-  }
+myXPConfig = def { font = "xft:Source Code Pro:size=14:regular:antialias=true"
+                 , position        = CenteredAt (1 / 4) (2 / 3)
+                 , bgColor         = myBgColor
+                 , fgColor         = myFgColor
+                 , bgHLight        = myFgColor
+                 , fgHLight        = myBgColor
+                 , borderColor     = myFgColor
+                 , searchPredicate = fuzzyMatch
+                 , sorter          = fuzzySort
+                 , height          = 30
+                 }

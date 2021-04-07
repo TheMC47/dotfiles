@@ -21,22 +21,22 @@ packages:
     git: /home/yecinem/xmonad-contrib/
     pantry-tree:
       size: 22123
-      sha256: e6c2efdc3ae36a8b2f834a8ad314d622ab5abeba5ecab04f74f91be9596fa9f3
-    commit: 3b07072f41ad5cfba243a5b04a8c884c42a8e824
+      sha256: c02e7fab2d7ef70c1c12412c3a5fe95c4aea5edb4b7227959cedfcd2a79902b2
+    commit: de24d1407f20922a1b9be5670a3073c466807f6e
   original:
     git: /home/yecinem/xmonad-contrib/
-    commit: 3b07072f41ad5cfba243a5b04a8c884c42a8e824
+    commit: de24d1407f20922a1b9be5670a3073c466807f6e
 - completed:
-    size: 160559
-    url: https://github.com/xmonad/x11/archive/master.tar.gz
+    size: 160026
+    url: https://github.com/xmonad/x11/archive/6285080d6c0f0369ba729f45d636efd18182bb30.tar.gz
     name: X11
     version: 1.9.2
-    sha256: 6ae7cae2916fca7b5b029dc44fe44a09ccb958eaacd1693444c9d9044a291356
+    sha256: 20e2a056f7520fa581cdd61ec9ed437c0f8d58cb810bac7f1d58daf6a5e30401
     pantry-tree:
-      size: 3621
-      sha256: 52f4f3246aee0257cb3016d32300e3e8226e2f8e351f1df501847981e4819fb9
+      size: 3341
+      sha256: 7f926c26f78eec077645b4122ee621d91c1ad6021fe18b62f3ab5a3faa133bf9
   original:
-    url: https://github.com/xmonad/x11/archive/master.tar.gz
+    url: https://github.com/xmonad/x11/archive/6285080d6c0f0369ba729f45d636efd18182bb30.tar.gz
 snapshots:
 - completed:
     size: 565720
