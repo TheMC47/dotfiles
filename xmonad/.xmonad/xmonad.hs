@@ -78,9 +78,15 @@ main =
                             -- Prompts
                            ("M-x", xmonadPrompt myXPConfig)
                          ]
+                      ++ screenKeys
                       ++ emacsKeys
                       )
  where
+  screenKeys =
+    [ ("M-" <> m <> show k, screenWorkspace s >>= flip whenJust (windows . f))
+    | (k, s) <- zip "op" [0 ..]
+    , (m, f) <- zip ["", "S-"] [W.view, W.shift]
+    ]
   emacsKeys = makeSubmap
     "e"
     (spawn emacs)
@@ -104,22 +110,11 @@ myKeys XConfig {..} =
     -- mod-[1..9], Switch to workspace N
     -- mod-shift-[1..9], Move client to workspace N
     --
-       [ ((m .|. modMask, k), windows $ f i)
-       | (i, k) <- zip workspaces ([xK_1 .. xK_9] ++ [xK_0])
-       , (f, m) <-
-         [(W.view, 0), (W.shift, shiftMask), (W.greedyView, controlMask)]
-       ]
-    ++
-      --
-      -- mod-{i,o}, Switch to physical/Xinerama screens 2, 1
-      -- mod-shift-{i,o}, Move client to screen 2, 1
-      --
-       [ ( (m .|. modMask, key)
-         , screenWorkspace sc >>= flip whenJust (windows . f)
-         )
-       | (key, sc) <- zip [xK_o, xK_i] [0 ..]
-       , (f  , m ) <- [(W.view, 0), (W.shift, shiftMask)]
-       ]
+      [ ((m .|. modMask, k), windows $ f i)
+      | (i, k) <- zip workspaces ([xK_1 .. xK_9] ++ [xK_0])
+      , (f, m) <-
+        [(W.view, 0), (W.shift, shiftMask), (W.greedyView, controlMask)]
+      ]
 
 myModMask :: KeyMask
 myModMask = mod4Mask
