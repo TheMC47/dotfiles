@@ -7,8 +7,8 @@ import           XMonad
 import           XMonad.Actions.UpdatePointer
 import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
+import           XMonad.Hooks.InsertPosition
 import           XMonad.Hooks.ManageDocks
-import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.StatusBar
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Layout.FixedAspectRatio
@@ -246,12 +246,11 @@ myLayout =
 ---------------------
 
 myManageHook :: ManageHook
-myManageHook = mconcat manageHooks
+myManageHook = insertPosition Below Older <> mconcat manageHooks
  where
   manageHooks = generalRules ++ concat windowRules
   generalRules =
     [ className =? "discord" --> doShift (workspaceAt 8)
-    , not <$> isDialog --> doF avoidMaster
     , title =? "Netflix" <||> className =? "vlc" --> doFixAspect (16 / 9)
     ]
   windowRules =
@@ -261,11 +260,6 @@ myManageHook = mconcat manageHooks
   floatsClasses =
     ["MPlayer", "Gimp", "yakuake", "Plasma-desktop", "ksmserver", "R_x11"]
   floatsTitles = ["alsamixer"]
-
-avoidMaster :: W.StackSet i l a s sd -> W.StackSet i l a s sd
-avoidMaster = W.modify' $ \c -> case c of
-  W.Stack t [] (r : rs) -> W.Stack t [r] rs
-  _                     -> c
 
 ---------------------
 -- EWMH
