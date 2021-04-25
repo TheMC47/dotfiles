@@ -1,7 +1,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 
-import           Data.Bifunctor
+import           Control.Arrow           hiding ( (|||) )
 import qualified Data.Map                      as M
 import           XMonad
 import           XMonad.Actions.UpdatePointer
@@ -66,20 +66,12 @@ main =
                          , ("M-S-q", kill)
                          , ("M-S-x", logout)
                          , ("M-q"  , xmonadRecompile)
-                         , ( "M-a 6"
-                           , withFocused (broadcastMessage . FixRatio (16 / 9))
-                             >> refresh
-                           )
-                         , ( "M-a r"
-                           , withFocused (broadcastMessage . ResetRatio)
-                             >> refresh
-                           )
-                         ,
                             -- Prompts
                            ("M-x", xmonadPrompt myXPConfig)
                          ]
                       ++ screenKeys
                       ++ emacsKeys
+                      ++ ratioKeys
                       )
  where
   screenKeys =
@@ -94,6 +86,11 @@ main =
     , ("o"  , orgPrompt myXPConfig "TODO" "org/todos.org")
     , ("S-o", orgPromptPrimary myXPConfig "TODO" "org/todos.org")
     ]
+  mkRatioAction = (>> refresh) . withFocused . (broadcastMessage .)
+  ratioKeys     = makeSubmap "a" (mkRatioAction $ ToggleRatio (16 / 9)) $ map
+    (second mkRatioAction)
+    [("r", ResetRatio), ("6", FixRatio (16 / 9)), ("4", FixRatio (4 / 3))]
+
 
 -- | A small helper function to make submaps. For the given key k,
 -- it binds @M-k@ to the given action, and prefixes the keys in the
