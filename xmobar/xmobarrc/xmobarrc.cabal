@@ -27,8 +27,6 @@ executable xmobar
   main-is: xmobarrc.hs
   other-modules:
       Paths_xmobarrc
-  hs-source-dirs:
-      src
   ghc-options: -rtsopts -threaded -with-rtsopts=-N -Wall
   build-depends:
       base >=4.7 && <5
