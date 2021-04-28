@@ -23,6 +23,7 @@ import           XMonad.Layout.Spacing
 import           XMonad.Prompt
 import           XMonad.Prompt.FuzzyMatch
 import           XMonad.Prompt.OrgMode
+import           XMonad.Prompt.Workspace
 import           XMonad.Prompt.XMonad
 import qualified XMonad.StackSet               as W
 import           XMonad.Util.ClickableWorkspaces
@@ -47,7 +48,6 @@ main =
     $ def { manageHook = myManageHook <> namedScratchpadManageHook scratchpads
           , modMask            = myModMask
           , workspaces         = myWorkspaces
-          , keys               = myKeys <> keys def
           , layoutHook         = myLayout
           , handleEventHook    = windowedFullscreenFixEventHook
           , logHook            = updatePointer (0.5, 0.5) (0, 0)
@@ -70,10 +70,18 @@ main =
                            ("M-x", xmonadPrompt myXPConfig)
                          ]
                       ++ screenKeys
+                      ++ workspaceKeys
                       ++ emacsKeys
                       ++ ratioKeys
                       )
  where
+  workspaceNumbers = [1 :: Int .. 9] <> [0]
+  workspaceKeys =
+    [ ("M-" <> m <> show k, withNthWorkspace f i)
+    | (k, i) <- zip workspaceNumbers [0 ..]
+    , (m, f) <- [("", W.view), ("C-", W.greedyView), ("S-", W.shift)]
+    ]
+
   screenKeys =
     [ ("M-" <> m <> show k, screenWorkspace s >>= flip whenJust (windows . f))
     | (k, s) <- zip "op" [0 ..]
@@ -98,20 +106,6 @@ main =
 makeSubmap :: String -> X () -> [(String, X ())] -> [(String, X ())]
 makeSubmap k action ks =
   ("M-" <> k, action) : map (first (("M-S-" <> k <> " ") <>)) ks
-
-myKeys :: XConfig l -> M.Map (KeyMask, KeySym) (X ())
-myKeys XConfig {..} =
-  M.fromList
-    $
-    --
-    -- mod-[1..9], Switch to workspace N
-    -- mod-shift-[1..9], Move client to workspace N
-    --
-      [ ((m .|. modMask, k), windows $ f i)
-      | (i, k) <- zip workspaces ([xK_1 .. xK_9] ++ [xK_0])
-      , (f, m) <-
-        [(W.view, 0), (W.shift, shiftMask), (W.greedyView, controlMask)]
-      ]
 
 myModMask :: KeyMask
 myModMask = mod4Mask
