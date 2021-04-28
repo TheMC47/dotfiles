@@ -246,7 +246,7 @@ myLayout =
 ---------------------
 
 myManageHook :: ManageHook
-myManageHook = insertPosition Below Older <> mconcat manageHooks
+myManageHook = insertPosition Below Newer <> mconcat manageHooks
  where
   manageHooks = generalRules ++ concat windowRules
   generalRules =
