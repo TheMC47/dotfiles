@@ -3,43 +3,10 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    size: 72803
-    url: https://github.com/xmonad/xmonad/archive/master.tar.gz
-    name: xmonad
-    version: '0.15'
-    sha256: 41e935a66e41b5d8ad35409b5293aed2d20a787df75abbe1a94bad056cdc9d8c
-    pantry-tree:
-      size: 2994
-      sha256: 8aca864cddc4b75fba1e9e8d76ebb2158bbf075a9b9132719c77dc63c9e69316
-  original:
-    url: https://github.com/xmonad/xmonad/archive/master.tar.gz
-- completed:
-    name: xmonad-contrib
-    version: '0.16'
-    git: /home/yecinem/xmonad-contrib/
-    pantry-tree:
-      size: 22123
-      sha256: c02e7fab2d7ef70c1c12412c3a5fe95c4aea5edb4b7227959cedfcd2a79902b2
-    commit: de24d1407f20922a1b9be5670a3073c466807f6e
-  original:
-    git: /home/yecinem/xmonad-contrib/
-    commit: de24d1407f20922a1b9be5670a3073c466807f6e
-- completed:
-    size: 160026
-    url: https://github.com/xmonad/x11/archive/6285080d6c0f0369ba729f45d636efd18182bb30.tar.gz
-    name: X11
-    version: 1.9.2
-    sha256: 20e2a056f7520fa581cdd61ec9ed437c0f8d58cb810bac7f1d58daf6a5e30401
-    pantry-tree:
-      size: 3341
-      sha256: 7f926c26f78eec077645b4122ee621d91c1ad6021fe18b62f3ab5a3faa133bf9
-  original:
-    url: https://github.com/xmonad/x11/archive/6285080d6c0f0369ba729f45d636efd18182bb30.tar.gz
+packages: []
 snapshots:
 - completed:
-    size: 565720
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/17/8.yaml
-    sha256: 76bf8992ff8dfe6eda9c02f81866138c2369344d5011ab39ae403457c4448b03
-  original: lts-17.8
+    size: 587126
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/8.yaml
+    sha256: 93a107557e8691ed5ca17beaee41e68222b142c48868fc8c04a4181fb233477d
+  original: lts-18.8

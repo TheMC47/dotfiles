@@ -1,11 +1,6 @@
-resolver: lts-17.8
+resolver: lts-18.8
 
 packages:
   - .
-extra-deps:
-  - github: xmonad/xmonad
-    commit: master
-  - git: /home/yecinem/xmonad-contrib/
-    commit: de24d1407f20922a1b9be5670a3073c466807f6e
-  - github: xmonad/x11
-    commit: 6285080d6c0f0369ba729f45d636efd18182bb30
+  - xmonad
+  - xmonad-contrib
