@@ -10,6 +10,7 @@ build-type:     Simple
 
 library
   exposed-modules:
+      MyXMobar
       XMobarStatus
   other-modules:
       Paths_xmonad_private

@@ -1,9 +1,11 @@
-{-# LANGUAGE BlockArguments, RecordWildCards #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE BlockArguments #-}
 
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 import           Data.Bifunctor
 import qualified Data.Map                      as M
-import           XMonad
+import           XMonad                  hiding ( defaultConfig )
 import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.DynamicWorkspaceGroups
@@ -15,7 +17,6 @@ import           XMonad.Actions.TopicSpace
                                                 , topicNames
                                                 )
 import           XMonad.Actions.UpdatePointer
-import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.InsertPosition
 import           XMonad.Hooks.ManageDocks
@@ -40,24 +41,21 @@ import           XMonad.Prompt.OrgMode
 import           XMonad.Prompt.Workspace
 import           XMonad.Prompt.XMonad
 import qualified XMonad.StackSet               as W
-import           XMonad.Util.ClickableWorkspaces
 import           XMonad.Util.EZConfig
 import           XMonad.Util.Hacks
-import           XMonad.Util.Loggers
 import           XMonad.Util.NamedScratchpad
                                          hiding ( name )
 
-
-myBgColor = "#2E3440"
-
-myFgColor = "#D8DEE9"
+import           Control.Concurrent.STM
+import           MyXMobar
 
 main :: IO ()
-main =
+main = do
+  trayerTQ <- atomically $ newTQueue @Int
   xmonad
     .                 setEwmhActivateHook doAskUrgent
     .                 docks
-    .                 dynamicSBs barSpawner
+    .                 dynamicSBs (barSpawner trayerTQ)
     .                 javaHack
     .                 withUrgencyHook NoUrgencyHook
     .                 ewmh
@@ -69,6 +67,9 @@ main =
                         , handleEventHook    = windowedFullscreenFixEventHook
                                                <> swallowEventHook (className =? "Alacritty")
                                                                    (return True)
+                                               <> trayResizeHook'
+                                                    (io . atomically . writeTQueue trayerTQ)
+                                                    (className =? "trayer")
                         , logHook            = updatePointer (0.5, 0.5) (0, 0)
                         , focusedBorderColor = myFgColor
                         , normalBorderColor  = myBgColor
@@ -464,64 +465,6 @@ myManageHook =
   floatsTitles = ["alsamixer"]
 
 ---------------------
--- Status Bars
----------------------
-
-circleSep :: String
-circleSep =
-  "<icon=circle_right.xpm/></fc>  <fc=#D8DEE9,#2E3440:0><icon=circle_left.xpm/>"
-
-topPP :: X PP
-topPP =
-  copiesPP (xmobarColor "green" "")
-    <=< clickablePP
-    .   filterOutWsPP [scratchpadWorkspaceTag]
-    $   def { ppCurrent = xmobarBorder "Bottom" myFgColor 4
-            , ppUrgent  = xmobarBorder "Bottom" "#CD3C66" 4
-            , ppVisible = xmobarBorder "Bottom" "#98a0b3" 1
-            , ppSep     = circleSep
-            , ppExtras = [logLayoutOnScreen 0, shortenL 50 (logTitleOnScreen 0)]
-            , ppOrder   = \(ws : _ : _ : extras) -> ws : extras
-            }
-
-secondaryPP :: ScreenId -> X PP
-secondaryPP s = pure $ def
-  { ppOrder  = \(_ : _ : _ : extras) -> extras
-  , ppSep    = circleSep
-  , ppExtras = [ logCurrentOnScreen s
-               , logLayoutOnScreen s
-               , shortenL 50 $ logTitleOnScreen s
-               , logWhenActive s (logConst "*")
-               ]
-  }
-
-barSpawner :: ScreenId -> IO StatusBarConfig
-barSpawner 0       = pure $ statusBarProp "xmobar top" topPP <> trayerSB
-barSpawner s@(S n) = pure $ statusBarPropTo
-  ("_XMONAD_LOG__Secondary_" <> show n)
-  ("xmobar secondary " <> show n)
-  (secondaryPP s)
-
-trayerSB :: StatusBarConfig
-trayerSB = statusBarGeneric
-  (unwords
-    [ "trayer"
-    , "--edge top"
-    , "--align right"
-    , "--widthtype request"
-    , "--expand true"
-    , "--monitor primary"
-    , "--transparent true"
-    , "--alpha 0"
-    , "-l"
-    , "--tint 0x2E3440"
-    , "--height 30"
-    , "--margin 27"
-    ]
-  )
-  mempty
-
----------------------
 -- Prompt
 ---------------------
 myXPConfig :: XPConfig
@@ -536,3 +479,13 @@ myXPConfig = def { font = "xft:Source Code Pro:size=14:regular:antialias=true"
                  , sorter          = fuzzySort
                  , height          = 30
                  }
+
+---------------------
+-- Unmerged Patches
+---------------------
+trayResizeHook' :: (Int -> X ()) -> Query Bool -> Event -> X All
+trayResizeHook' resizeTray trayQ ConfigureEvent { ev_window = w } = do
+  whenX (runQuery trayQ w) $ withDisplay $ \d ->
+    withWindowAttributes d w (resizeTray . fi . wa_width)
+  return (All True)
+trayResizeHook' _ _ _ = return (All True)

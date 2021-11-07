@@ -3,7 +3,14 @@ resolver: lts-18.5
 packages:
   - .
 
+flags:
+  xmobar:
+    all_extensions: true
+
 extra-deps:
   - X11-xft-0.3.1
   - xmonad-0.17.0
   - xmonad-contrib-0.17.0
+  - xmobar-0.40
+  - netlink-1.1.1.0@sha256:d83424b5ba9921191449e4b1f53c7cba7f4375f2c55a9b737c77e982e1f40d00,3689
+
