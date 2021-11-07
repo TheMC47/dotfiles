@@ -3,8 +3,6 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 7d26b618be6027680d42dd0b6e7fecb15ef2e28806045646489c5629ce4f5c34
 
 name:           xmonad-private
 version:        0.0.0
