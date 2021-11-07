@@ -3,14 +3,14 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 7d26b618be6027680d42dd0b6e7fecb15ef2e28806045646489c5629ce4f5c34
 
 name:           xmonad-private
 version:        0.0.0
 build-type:     Simple
 
 library
+  exposed-modules:
+      XMobarStatus
   other-modules:
       Paths_xmonad_private
   hs-source-dirs:
@@ -22,17 +22,19 @@ library
     , flow
     , process
     , split
+    , stm
     , unix
     , utf8-string
-    , xmonad
-    , xmonad-contrib
+    , xmobar >=0.40
+    , xmonad >=0.17.0
+    , xmonad-contrib >=0.17.0
   default-language: Haskell2010
 
 executable xmonad-private
   main-is: xmonad.hs
   other-modules:
       Paths_xmonad_private
-  ghc-options: -Wall
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       X11
     , base >=4.7 && <5
@@ -40,9 +42,11 @@ executable xmonad-private
     , flow
     , process
     , split
+    , stm
     , unix
     , utf8-string
-    , xmonad
-    , xmonad-contrib
+    , xmobar >=0.40
+    , xmonad >=0.17.0
+    , xmonad-contrib >=0.17.0
     , xmonad-private
   default-language: Haskell2010
