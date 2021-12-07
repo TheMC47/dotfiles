@@ -353,6 +353,11 @@ eWithTitle t = (("-F '(quote (name . \"" <> t <> "\"))' ") <>)
 inEmacs :: ShowS
 inEmacs = (emacs <>)
 
+openP :: ShowS
+openP dir = "--eval '(open-magit-or-dired " <> dir <> ")'"
+
+openDir :: X ()
+openDir = spawnHere . inEmacs . openP . quote =<< currentTopicDir topicConfig
 
 magit :: ShowS
 magit dir = "--eval '(magit-status \"" <> dir <> "\")' "
