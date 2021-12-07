@@ -227,8 +227,4 @@ togglePlasma(){
 
 random-quote | cowsay
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/yecinem/.sdkman"
-[[ -s "/home/yecinem/.sdkman/bin/sdkman-init.sh" ]] && source "/home/yecinem/.sdkman/bin/sdkman-init.sh"
-
 eval "$(starship init bash)"
