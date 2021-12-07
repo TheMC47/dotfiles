@@ -270,7 +270,14 @@ topics =
             (magitHere >> terminalHere)
        , TG formalMethodsGroup
             "Studium/FormalMethods"
-            [(0, spawnHere "eclipse" >> spawnHere emacs), (1, mempty)]
+            [(0, spawnHere "eclipse" >> openDir), (1, mempty)]
+       , TI (book <> " Databases") "Studium/Datenbanksysteme" openDir
+       , TG "reschoole"
+            "Studium/SoftwareEngineering/SoftwareEngineering-WS2022-reschoole"
+            [(0, magitHere >> terminalHere), (1, terminalHere)]
+       , TG (book <> "DB - Project")
+            "Studium/Datenbanksysteme/project"
+            [(0, magitHere >> terminalHere), (1, terminalHere)]
        ]
  where
   -- | Associate a directory with the topic, but don't spawn anything.
