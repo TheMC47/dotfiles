@@ -40,26 +40,26 @@
 ;; Specify a `:branch' to install a package from a particular branch or tag.
 ;; This is required for some packages whose default branch isn't 'master' (which
 ;; our package manager can't deal with; see raxod502/straight.el#279)
-;(package! builtin-package :recipe (:branch "develop"))
+;;(package! builtin-package :recipe (:branch "develop"))
 
-(package! sudoku)
-(package! jupyter)
-(package! isar-mode :recipe
-  (:host github
-   :repo "m-fleury/isar-mode"))
+;;(package! sudoku)
+;;(package! jupyter)
+;;(package! isar-mode :recipe
+;;  (:host github
+;;   :repo "m-fleury/isar-mode"))
 
-(package! isar-goal-mode :recipe
-  (:host github
-   :repo "m-fleury/simp-isar-mode"))
+;;(package! isar-goal-mode :recipe
+;;  (:host github
+ ;;  :repo "m-fleury/simp-isar-mode"))
 
-(package! lsp-isar :recipe
-  (:host github
-   :repo "m-fleury/isabelle-release"
-   :branch "isabelle2019-more-vscode"
-   :files ("src/Tools/emacs-lsp/lsp-isar/lsp-*.el")))
+;;(package! lsp-isar :recipe
+;;  (:host github
+;;   :repo "m-fleury/isabelle-release"
+;;   :branch "isabelle2019-more-vscode"
+;;   :files ("src/Tools/emacs-lsp/lsp-isar/lsp-*.el")))
 
-(package! pony-mode)
-(package! gradle-mode)
-(package! exec-path-from-shell)
-(package! org-ref)
-(package! orgtbl-aggregate)
+;;(package! pony-mode)
+;;(package! gradle-mode)
+;;(package! exec-path-from-shell)
+;;(package! org-ref)
+;;(package! orgtbl-aggregate)

@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: frame
+# key: fr
+# uuid: fr
+# --
+\begin{frame}
+        ${1:\frametitle{$2}}
+        ${0:`%`}
+\end{frame}
+\clearpage

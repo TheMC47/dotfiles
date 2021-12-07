@@ -8,27 +8,31 @@
 Welcome to my emacs-config. I use [[https://github.com/hlissner/doom-emacs][doom-emacs]] as my distribution, so the config will only work on that. I kept a lot of the comments from the original example, as they are really helpful.
 
 * Table of Contents :TOC:
-- [[#general][General]]
+- [[#x-general][[X] General]]
   - [[#info][Info]]
-- [[#flychek-linting][Flychek: Linting]]
-- [[#company-auto-complete][Company: Auto-Complete]]
-- [[#ui][UI]]
-- [[#orgmode][Orgmode]]
-- [[#lsp][LSP]]
-- [[#dired][Dired]]
-- [[#snippets-yasnippet][Snippets: YASnippet]]
-- [[#ivy][Ivy]]
-- [[#haskell][Haskell]]
-- [[#pdf][PDF]]
-- [[#latex][Latex]]
-- [[#isabelle][Isabelle]]
-- [[#java][Java]]
-- [[#c][C++]]
+- [[#-flychek-linting][[?] Flychek: Linting]]
+- [[#no-company-auto-complete][NO Company: Auto-Complete]]
+- [[#x-ui][[X] UI]]
+- [[#kill-orgmode][KILL Orgmode]]
+- [[#no-lsp][NO LSP]]
+- [[#x-dired][[X] Dired]]
+- [[#x-snippets-yasnippet][[X] Snippets: YASnippet]]
+- [[#--ivy][[ ] Ivy]]
+- [[#x-haskell][[X] Haskell]]
+- [[#x-python][[X] Python]]
+- [[#x-pdf][[X] PDF]]
+- [[#--latex][[ ] Latex]]
+- [[#no-isabelle][NO Isabelle]]
+- [[#wait-java][WAIT Java]]
+- [[#no-c][NO C++]]
 - [[#projectile][Projectile]]
-- [[#tabs][Tabs]]
-- [[#notes][Notes]]
+- [[#wait-email][WAIT EMail]]
+- [[#wait-calendar][WAIT Calendar]]
+- [[#no-tabs][NO Tabs]]
+- [[#wait-sql][WAIT SQL]]
+- [[#--notes][[ ] Notes]]
 
-* General
+* [X] General
 ** Info
 Place your private configuration here! Remember, you do not need to run 'doom refresh' after modifying this file!
 #+BEGIN_SRC emacs-lisp
@@ -39,17 +43,20 @@ These are used for a number of things, particularly for GPG configuration, some 
 (setq user-full-name "Yecine Megdiche"
       user-mail-address "yecine.megdiche@gmail.com")
 #+END_SRC
-* Flychek: Linting
+* [?] Flychek: Linting
 #+BEGIN_SRC emacs-lisp
-(after! flycheck (setq flycheck-check-syntax-automatically '(mode-enabled new-line save idle-change)) (setq flycheck-idle-change-delay '0))
+(after! flycheck
+  (setq flycheck-check-syntax-automatically '(mode-enabled new-line save idle-change))
+  (setq flycheck-idle-change-delay '0))
+(setq flycheck-global-modes '(not org-mode))
 #+END_SRC
 
-* Company: Auto-Complete
+* NO Company: Auto-Complete
 I don't like to wait for the auto-complete prompt
 #+BEGIN_SRC emacs-lisp
 (setq company-idle-delay 0)
 #+END_SRC
-* UI
+* [X] UI
 Don't truncate long lines
 #+BEGIN_SRC emacs-lisp
 (setq truncate-lines nil)
@@ -60,12 +67,15 @@ Doom exposes five (optional) variables for controlling fonts in Doom. Here are t
 + ~doom-big-font~ -- used for ~doom-big-font-mode~
 They all accept either a font-spec, font string ("Input Mono-12"), or xlfd font string. You generally only need these two:
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Source Code Pro"
+(setq ;; doom-font (font-spec :family "Source Code Pro"
+      ;;                      :size (pcase (system-name)
+      ;;                              ("yecine-xps159560" 26)
+      ;;                              (_ 14)))
+      doom-variable-pitch-font (font-spec :family "sans")
+      doom-font (font-spec :family "Hasklig"
                            :size (pcase (system-name)
                                    ("yecine-xps159560" 26)
-                                   (_ 14))
-                           :antialias nil)
-      doom-variable-pitch-font (font-spec :family "sans"))
+                                   (_ 14))))
 #+END_SRC
 There are two ways to load a theme. Both assume the theme is installed and available. You can either set ~doom-theme~ or manually load a theme with the ~load-theme~ function. These are the defaults.
 #+BEGIN_SRC emacs-lisp
@@ -91,9 +101,10 @@ And finally, spice up the splash screen
 #+begin_src emacs-lisp
 (setq fancy-splash-image (concat doom-private-dir "club-mate.svg"))
 #+end_src
-* Orgmode
+* KILL Orgmode
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/org/")
+(setq org-agenda-files (list "~/org"))
 (require 'org-ref)
 ;; TODO fix this
 (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
@@ -108,11 +119,11 @@ And finally, spice up the splash screen
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 #+END_SRC
-* LSP
+* NO LSP
 #+BEGIN_SRC emacs-lisp
 (setq lsp-idle-delay 2.0)
 #+END_SRC
-* Dired
+* [X] Dired
 Use ~ in a ~dired~ buffer to go to the home directory.
 #+BEGIN_SRC emacs-lisp
 (defun my/dired-go-home ()
@@ -125,7 +136,7 @@ Use ~ in a ~dired~ buffer to go to the home directory.
  :n "~" #'my/dired-go-home)
 
 #+END_SRC
-* Snippets: YASnippet
+* [X] Snippets: YASnippet
 A dedicated key (other than ~TAB~) for expanding snippets.
 #+BEGIN_SRC emacs-lisp
 (map!
@@ -134,7 +145,7 @@ A dedicated key (other than ~TAB~) for expanding snippets.
  :i "C-," #'yas-expand)
 
 #+END_SRC
-* Ivy
+* [ ] Ivy
 With this, ~C-o~ will show a list of available actions in a hydra.
 #+BEGIN_SRC emacs-lisp
 (setq ivy-read-action-function #'ivy-hydra-read-action)
@@ -144,7 +155,7 @@ You can mark multiple entires with ~M-m~. This is helpful for example for adding
 (map! :after ivy
       :map ivy-minibuffer-map "M-m" #'ivy-mark)
 #+END_SRC
-* Haskell
+* [X] Haskell
 #+BEGIN_SRC emacs-lisp
 ;; (use-package lsp-haskell
 ;;  :ensure t
@@ -153,87 +164,33 @@ You can mark multiple entires with ~M-m~. This is helpful for example for adding
 ;;  ;; Comment/uncomment this line to see interactions between lsp client/server.
 ;;  (setq lsp-log-io t)
 ;; )
-(plist-put! +ligatures-extra-symbols
-  :bot "⊥")
+;; (plist-put! +ligatures-extra-symbols
+;;   :bot "⊥")
 
 (setq lsp-haskell-formatting-provider "brittany")
-(after! haskell-mode
-  (set-ligatures! 'haskell-mode
-    :bot "undefined"
-    :null "mempty"))
+;; (after! haskell-mode
+;;   (set-ligatures! 'haskell-mode
+;;     :bot "undefined"
+;;     :null "mempty"))
 #+END_SRC
-* PDF
+* [X] Python
+#+begin_src emacs-lisp
+(add-hook! python-mode
+  (flycheck-select-checker 'python-flake8))
+(put 'py-isort-options 'safe-local-variable #'listp)
+#+end_src
+* [X] PDF
 - Some customization to set midnight clors and resize factor
 #+BEGIN_SRC emacs-lisp
 (setq pdf-view-midnight-colors '("dark gray" . "#012B36"))
 (setq pdf-view-resize-factor 1.1)
 #+END_SRC
-- This is supposed to save the last visited page, but it just doesn't work... I need to fix this.
-#+BEGIN_SRC emacs-lisp
-;; TODO doesn't work, figure out why
-;; TODO this was solved by https://github.com/nicolaisingh/saveplace-pdf-view/blob/master/saveplace-pdf-view.el. Figure out why this works
-;; (defun get-string-from-file (filePath)
-;;   "Return filePath's file content."
-;;   (with-temp-buffer
-;;     (insert-file-contents filePath)
-;;     (buffer-string)))
-;; (defun pdf-view-save-page ()
-;;   "Save the current page number for the document."
-;;   (interactive)
-;;   (let ((pdf-view-page-no (number-to-string (pdf-view-current-page))))
-;;     (shell-command
-;;      (concat "~/.doom.d/scripts/pdf-view-save.py "
-;;              pdf-view-page-no " \""buffer-file-name"\" " "save"))))
-;; (defun pdf-view-load-page ()
-;;   "Load the saved page number for the document."
-;;   (interactive)
-;;   ;; .py scripts wants three arguments, so we'll send 0 as a fake page
-;;   ;; number.
-;;   (shell-command
-;;    (concat "~/.doom.d/scripts/pdf-view-save.py "
-;;            "0" " \""buffer-file-name"\" " "load"))
-;;   (let ((pdf-view-saved-page-no
-;;          (string-to-number
-;;           (get-string-from-file "/tmp/pdf-view-save"))))
-;;     (if (= pdf-view-saved-page-no -1)
-;;         (message "No saved page number.")
-;;       (pdf-view-goto-page pdf-view-saved-page-no))))
-
-;; ;; (defun save-pdf-hook ()
-;; ;;   (if (and buffer-file-name
-;; ;;            (file-name-extension buffer-file-name)
-;; ;;            (string= (downcase (file-name-extension buffer-file-name)) "pdf"))
-;; ;;       (pdf-view-save-page)))
-
-;; ;; (add-hook 'kill-buffer-hook 'save-pdf-hook)
-;; ;; (add-hook 'pdf-view-mode-hook 'pdf-view-load-page)
-;; (after! pdf-view
-;;   (remove-hook! 'pdf-view-change-page-hook '+pdf-remember-page-number-h)
-;;   (remove-hook! 'pdf-view-mode-hook '+pdf-restore-page-number-h))
-;; (defun pdf-view-save-page ()
-;;   "Save the current page number for the document."
-;;   (interactive)
-;;   (let (pdf (pdf-view-current-page))
-;;         (doom-store-put buffer-file-name page nil "pdf-view")))
-
-
-;; (defun pdf-view-load-page ()
-;;   "Load the saved page number for the document."
-;;   (interactive)
-;;   (when-let (page (doom-store-get buffer-file-name "pdf-view"))
-;;     (pdf-view-goto-page page)))
-#+END_SRC
-
-* Latex
+* [ ] Latex
 - Disable Company mode. I don't find it particularly useful, it just overcrowds the screen. Using snippets instead is better.
 #+BEGIN_SRC emacs-lisp
 (setq company-global-modes '(not latex-mode))
-
 #+END_SRC
-- This way, opening a latex file will automatically open the preview pane
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-* Isabelle
+* NO Isabelle
 Say goodbye to jEdit!
 First, follow the instructions at https://github.com/m-fleury/isabelle-release/tree/Isabelle2020-more-vscode/src/Tools/emacs-lsp/spacemacs_layers/isabelle to build isabelle.
 Afterwards, this (together with the package declarations in ~packages.el~) should allow ~lsp-isar~ to play nicely with doom.
@@ -271,27 +228,64 @@ Afterwards, this (together with the package declarations in ~packages.el~) shoul
           "i s" 'lsp-isar-sledgehammer-interface
           "i t" 'lsp-isar-insert-try0)
 #+END_SRC
-* Java
+* WAIT Java
 #+BEGIN_SRC emacs-lisp
 (require 'gradle-mode)
 (gradle-mode 1)
 (setq lsp-java-vmargs '("-noverify" "-Xmx1G" "-XX:+UseG1GC" "-XX:+UseStringDeduplication" "-javaagent:/home/yecinem/lombok.jar" "-Xbootclasspath/a:/home/yecinem/lombok.jar"))
 (setq lsp-java-format-settings-url "file:///home/yecinem/.doom.d/eclipse-java-google-style.xml")
 #+END_SRC
-* C++
+* NO C++
 #+begin_src emacs-lisp
 ;; (push (c++-mode) +ligatures-in-mode)
 #+end_src
-* Projectile
+* DONE Projectile
 Projectile is just great. Here I register django as a custom project type
 #+BEGIN_SRC emacs-lisp
+
+(defun open-magit-or-dired (DIRECTORY)
+  (interactive)
+  (let ((toplevel (magit-toplevel DIRECTORY)))
+          (setq DIRECTORY (file-name-as-directory
+                           (expand-file-name DIRECTORY)))
+          (if (and toplevel (file-equal-p DIRECTORY toplevel))
+              (magit-status-setup-buffer DIRECTORY)
+            (dired DIRECTORY))))
+
+(setq +workspaces-switch-project-function #'open-magit-or-dired)
+
 (after! projectile
   (projectile-register-project-type 'npm '("manage.py")
                                     :test "python manage.py test"
                                     :run "python manage.py runserver"))
   ;; (projectile-register-project-type 'npm ''))
  #+END_SRC
-* Tabs
+* WAIT EMail
+#+begin_src emacs-lisp
+(set-email-account! "yecine.megdiche@gmail.com" t)
+#+end_src
+* WAIT Calendar
+#+begin_src emacs-lisp
+(setq calendar-islamic-all-holidays-flag 't
+      holiday-general-holidays 'nil
+      holiday-christian-holidays 'nil
+      holiday-hebrew-holidays 'nil
+      holiday-chinese-holidays 'nil
+      holiday-bahai-holidays 'nil)
+
+(after! calfw
+  (setq calendar-week-start-day 1))
+
+(defun my-open-calendar ()
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (list
+    (cfw:org-create-source "Green")  ; orgmode source
+   )))
+
+#+end_src
+* NO Tabs
 Doom provides integration with centaur tabs. This is some aestetic configuration for the module
 #+begin_src emacs-lisp
 (after! centaur-tabs
@@ -300,9 +294,29 @@ Doom provides integration with centaur tabs. This is some aestetic configuration
         centaur-tabs-style "slant")
   (centaur-tabs-group-by-projectile-project))
 #+end_src
+* WAIT SQL
+#+begin_src emacs-lisp
+(defun sql-beautify-region (beg end)
+    "Beautify SQL in region between beg and END.
+Dependency:
+npm i -g sql-formatter-cli"
+    (interactive "r")
+    (save-excursion
+      (shell-command-on-region beg end "sql-formatter-cli" nil t)))
+  (defun sql-beautify-buffer ()
+    "Beautify SQL in buffer."
+    (interactive)
+    (sql-beautify-region (point-min) (point-max)))
+  (add-hook 'sql-mode-hook '(lambda ()
+                              ;; beautify region or buffer
+                              (local-set-key (kbd "C-c t") 'sql-beautify-region)))
 
-* Notes
+#+end_src
+
+* [ ] Notes
  - The ~onsave~ flag for the ~format~ module is removed in favor of a per-project configuration. In order to activate auto-formatting on save in a directory for a language, add this code to the ~.dir-locals.el~ file.
 #+BEGIN_SRC emacs-lisp
 ;((nil . ((eval . (add-hook 'python-mode-hook #'format-all-mode)))))
+;; (plist-put! +ligatures-extra-symbols :return "⟼ ")
+(setq find-file-visit-truename nil)
 #+END_SRC
