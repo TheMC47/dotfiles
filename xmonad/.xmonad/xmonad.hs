@@ -1,6 +1,7 @@
-{-# LANGUAGE BlockArguments, RecordWildCards #-}
-
+{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
+
 import           Data.Bifunctor
 import qualified Data.Map                      as M
 import           XMonad
@@ -48,7 +49,6 @@ import           XMonad.Util.Loggers
 import           XMonad.Util.NamedScratchpad
                                          hiding ( name )
 
-
 myBgColor = "#2E3440"
 
 myFgColor = "#D8DEE9"
@@ -67,9 +67,9 @@ main =
                         , modMask            = myModMask
                         , workspaces         = topicNames topics
                         , layoutHook         = myLayout
-                        , handleEventHook    = windowedFullscreenFixEventHook
-                                               <> swallowEventHook (className =? "Alacritty")
-                                                                   (return True)
+                        , handleEventHook = windowedFullscreenFixEventHook <> swallowEventHook
+                                              (className =? "Alacritty")
+                                              (return True)
                         , logHook            = updatePointer (0.5, 0.5) (0, 0)
                         , focusedBorderColor = myFgColor
                         , normalBorderColor  = myBgColor
@@ -86,8 +86,9 @@ main =
                        , ("M1-C-q", kill)
                        , ("M-S-x" , logout)
                        , ("M-C-q" , xmonadRecompile)
-                          -- Prompts
-                       , ("M-x"   , xmonadPrompt myXPConfig)
+                       ,
+                            -- Prompts
+                         ("M-x"   , xmonadPrompt myXPConfig)
                        , ( "M-n"
                          , workspacePrompt myXPConfig (switchTopic topicConfig)
                          )
@@ -155,7 +156,6 @@ makeSubmap k action ks =
 myModMask :: KeyMask
 myModMask = mod4Mask
 
-
 myWorkspaces :: [String]
 myWorkspaces = zipWith -- euum. yeah. I know. overengineered
   (<>)
@@ -201,14 +201,20 @@ expanded to work with DynamicWorkspaceGroups
 --}
 
 -- | Convenience for standard topics.
-data TopicItem = TI
-  { name   :: Topic  -- ^ 'Topic' = 'String'
-  , dir    :: Dir    -- ^ Directory associated with topic; 'Dir' = 'String'
-  , action :: X ()   -- ^ Startup hook when topic is empty
-  } |
-  TG { name :: Topic
-     , dir :: Dir
-     , actions :: [(ScreenId, X ())]}
+data TopicItem
+  = TI
+      { -- | 'Topic' = 'String'
+        name :: Topic,
+        -- | Directory associated with topic; 'Dir' = 'String'
+        dir :: Dir,
+        -- | Startup hook when topic is empty
+        action :: X ()
+      }
+  | TG
+      { name :: Topic,
+        dir :: Dir,
+        actions :: [(ScreenId, X ())]
+      }
 
 myDirs :: [TopicItem] -> M.Map Topic Dir
 myDirs = M.fromList . concatMap go
@@ -280,11 +286,8 @@ topics =
             [(0, magitHere >> terminalHere), (1, terminalHere)]
        ]
  where
-  -- | Associate a directory with the topic, but don't spawn anything.
   noAction :: Topic -> Dir -> TopicItem
   noAction n d = TI n d mempty
-
-  -- | Basically a normal workspace.
   only :: Topic -> TopicItem
   only n = noAction n "./"
 
@@ -386,7 +389,6 @@ openFileInDir file =
 browse :: String -> X ()
 browse = spawnHere . ("chromium --new-window " <>)
 
-
 quote :: ShowS
 quote s = "\"" <> s <> "\""
 
@@ -450,7 +452,6 @@ willFloat = ask >>= \w -> liftX $ withDisplay $ \d -> do
   let isFixedSize = isJust (sh_min_size sh) && sh_min_size sh == sh_max_size sh
   isTransient <- isJust <$> io (getTransientForHint d w)
   return (isFixedSize || isTransient)
-
 
 myManageHook :: ManageHook
 myManageHook =
