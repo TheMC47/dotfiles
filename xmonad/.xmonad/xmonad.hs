@@ -19,6 +19,7 @@ import           XMonad.Hooks.DynamicLog
 import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.InsertPosition
 import           XMonad.Hooks.ManageDocks
+import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.StatusBar
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Hooks.WindowSwallowing
@@ -444,6 +445,7 @@ myManageHook =
   manageSpawn
     <> (not <$> willFloat --> insertPosition Below Newer)
     <> mconcat manageHooks
+    <> (isDialog --> doFloat)
  where
   manageHooks = generalRules ++ concat windowRules
   generalRules =
