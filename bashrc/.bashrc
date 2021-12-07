@@ -226,5 +226,6 @@ togglePlasma(){
 }
 
 random-quote | cowsay
+export BROWSER="/usr/bin/chromium"
 
 eval "$(starship init bash)"
