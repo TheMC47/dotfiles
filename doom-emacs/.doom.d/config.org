@@ -12,6 +12,7 @@
 - [[#projectile][Projectile]]
 - [[#python][Python]]
 - [[#haskell][Haskell]]
+- [[#javascript][JavaScript]]
 - [[#pdf][PDF]]
 
 * General
@@ -124,7 +125,10 @@ And almost always, whenever I'm opening a new project, I want to see the magit b
 * Haskell
 #+begin_src emacs-lisp
 (setq lsp-haskell-formatting-provider "brittany")
-
+#+end_src
+* JavaScript
+#+begin_src emacs-lisp
+(setq-hook! #'typescript-tsx-mode +format-with-lsp nil)
 #+end_src
 
 * PDF
