@@ -476,7 +476,13 @@ myManageHook =
     , [ title =? t --> doFloat | t <- floatsTitles ]
     ]
   floatsClasses =
-    ["MPlayer", "Gimp", "yakuake", "Plasma-desktop", "ksmserver", "R_x11"]
+    [ "MPlayer"
+    , "Gimp"
+    , "yakuake"
+    , "Plasma-desktop"
+    , "ksmserver-logout-greeter"
+    , "R_x11"
+    ]
   floatsTitles = ["alsamixer"]
 
 ---------------------
