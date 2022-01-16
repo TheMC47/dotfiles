@@ -70,6 +70,7 @@ main =
                         , handleEventHook = windowedFullscreenFixEventHook <> swallowEventHook
                                               (className =? "Alacritty")
                                               (return True)
+                                               <> trayerPaddingXmobarEventHook
                         , logHook            = updatePointer (0.5, 0.5) (0, 0)
                         , focusedBorderColor = myFgColor
                         , normalBorderColor  = myBgColor

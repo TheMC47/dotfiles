@@ -25,7 +25,7 @@ topBar = baseConfig
     <> styleUp (haskellIcon <> " %UnsafeXMonadLog%")
     <> "}{"
     <> concatMap styleUp
-                 ["%date%", "%cpu%", "%memory%", "%battery%", "%trayerpad%"]
+                 ["%date%", "%cpu%", "%memory%", "%battery%", "%_XMONAD_TRAYPAD%"]
     <> " "
   }
 
@@ -127,7 +127,7 @@ myCommands =
     ]
     50
   , Run UnsafeXMonadLog
-  , Run $ Com "/home/yecinem/xmobarrc/trayer-padding-icon.sh" [] "trayerpad" 10
+  , Run $ UnsafeXPropertyLog "_XMONAD_TRAYPAD"
   ]
 
 
