@@ -1,9 +1,9 @@
+@theme "nord"
 configuration {
 	display-drun:    "Run";
 	display-window:  "Window";
 	show-icons:      true;
 	sidebar-mode:    true;
-  theme: "nord";
 }
 * {
   spacing: 0;
