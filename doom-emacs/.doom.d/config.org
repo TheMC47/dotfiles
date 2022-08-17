@@ -38,14 +38,18 @@ Doom exposes five (optional) variables for controlling fonts in Doom. Here are t
 They all accept either a font-spec, font string ("Input Mono-12"), or xlfd font string. You generally only need these two:
 #+BEGIN_SRC emacs-lisp
 (setq ;; doom-font (font-spec :family "Source Code Pro"
-      ;;                      :size (pcase (system-name)
-      ;;                              ("yecine-xps159560" 26)
-      ;;                              (_ 14)))
-      doom-variable-pitch-font (font-spec :family "sans")
-      doom-font (font-spec :family "Hasklig"
-                           :size (pcase (system-name)
-                                   ("yecine-xps159560" 26)
-                                   (_ 14))))
+ ;;                      :size (pcase (system-name)
+ ;;                              ("yecine-xps159560" 26)
+ ;;                              (_ 14)))
+ ;; doom-variable-pitch-font (font-spec :family "sans")
+ ;; doom-font (font-spec :family "FiraCode"
+ ;;                      :weight 'normal
+ ;;                      :size 14))
+ ;; doom-font "FiraCode Nerd Font Mono:style=Retina,Regular:size=14:antialias=true")
+ doom-font "FiraCode Nerd Font Mono:style=Retina,Regular:size=14:antialias=true")
+ ;; doom-font "Hasklig:size=14:medium")
+ ;; doom-font (font-spec :family "Hasklig"
+ ;;                      :size 14))
 #+END_SRC
 There are two ways to load a theme. Both assume the theme is installed and available. You can either set ~doom-theme~ or manually load a theme with the ~load-theme~ function. These are the defaults.
 #+BEGIN_SRC emacs-lisp
