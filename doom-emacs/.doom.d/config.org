@@ -15,6 +15,7 @@
 - [[#javascript][JavaScript]]
 - [[#pdf][PDF]]
 - [[#cc][C/C++]]
+- [[#persp][Persp]]
 
 * General
 Place your private configuration here! Remember, you do not need to run 'doom refresh' after modifying this file!
@@ -150,4 +151,12 @@ And almost always, whenever I'm opening a new project, I want to see the magit b
                                 "--header-insertion=never"
                                 "--header-insertion-decorators=0"))
 (after! lsp-clangd (set-lsp-priority! 'clangd 2))
+
+(use-package! frames-only-mode
+  :hook (after-init . frames-only-mode))
+#+end_src
+* Persp
+#+begin_src emacs-lisp
+(after! persp-mode
+  (setq persp-emacsclient-init-frame-behaviour-override "main"))
 #+end_src
