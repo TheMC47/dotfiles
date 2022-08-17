@@ -14,6 +14,7 @@
 - [[#haskell][Haskell]]
 - [[#javascript][JavaScript]]
 - [[#pdf][PDF]]
+- [[#cc][C/C++]]
 
 * General
 Place your private configuration here! Remember, you do not need to run 'doom refresh' after modifying this file!
@@ -136,3 +137,13 @@ And almost always, whenever I'm opening a new project, I want to see the magit b
 #+BEGIN_SRC emacs-lisp
 (setq pdf-view-resize-factor 1.1)
 #+END_SRC
+* C/C++
+#+begin_src emacs-lisp
+(setq lsp-clients-clangd-args '("-j=3"
+                                "--background-index"
+                                "--clang-tidy"
+                                "--completion-style=detailed"
+                                "--header-insertion=never"
+                                "--header-insertion-decorators=0"))
+(after! lsp-clangd (set-lsp-priority! 'clangd 2))
+#+end_src
