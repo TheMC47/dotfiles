@@ -388,7 +388,7 @@ openFileInDir file =
     =<< currentTopicDir topicConfig
 
 browse :: String -> X ()
-browse = spawnHere . ("chromium --new-window " <>)
+browse = spawnHere . ("brave --new-window " <>)
 
 quote :: ShowS
 quote s = "\"" <> s <> "\""
