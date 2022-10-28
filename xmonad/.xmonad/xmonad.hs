@@ -65,9 +65,9 @@ main =
                         , modMask            = myModMask
                         , workspaces         = topicNames topics
                         , layoutHook         = myLayout
-                        , handleEventHook = windowedFullscreenFixEventHook <> swallowEventHook
-                                              (className =? "Alacritty")
-                                              (return True)
+                        , handleEventHook    = windowedFullscreenFixEventHook
+                                               <> swallowEventHook (className =? "Alacritty")
+                                                                   (not <$> checkDock)
                                                <> trayerPaddingXmobarEventHook
                         , logHook            = updatePointer (0.5, 0.5) (0, 0)
                         , focusedBorderColor = myFgColor
