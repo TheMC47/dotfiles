@@ -447,13 +447,6 @@ myLayout =
 ---------------------
 -- ManageHook
 ---------------------
-willFloat :: Query Bool
-willFloat = ask >>= \w -> liftX $ withDisplay $ \d -> do
-  sh <- io $ getWMNormalHints d w
-  let isFixedSize = isJust (sh_min_size sh) && sh_min_size sh == sh_max_size sh
-  isTransient <- isJust <$> io (getTransientForHint d w)
-  return (isFixedSize || isTransient)
-
 myManageHook :: ManageHook
 myManageHook =
   manageSpawn
