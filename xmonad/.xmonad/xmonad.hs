@@ -547,14 +547,16 @@ trayerSB = statusBarGeneric
 -- Prompt
 ---------------------
 myXPConfig :: XPConfig
-myXPConfig = def { font = "xft:Source Code Pro:size=14:regular:antialias=true"
-                 , position        = CenteredAt (1 / 4) (2 / 3)
-                 , bgColor         = myBgColor
-                 , fgColor         = myFgColor
-                 , bgHLight        = myFgColor
-                 , fgHLight        = myBgColor
-                 , borderColor     = myFgColor
-                 , searchPredicate = fuzzyMatch
-                 , sorter          = fuzzySort
-                 , height          = 30
-                 }
+myXPConfig = def
+  { font            =
+    "xft:Source Code Pro:size=11:regular:antialias=true,FontAwesome:pixelsize=13"
+  , position        = CenteredAt (1 / 4) (2 / 3)
+  , bgColor         = myBgColor
+  , fgColor         = myFgColor
+  , bgHLight        = myFgColor
+  , fgHLight        = myBgColor
+  , borderColor     = myFgColor
+  , searchPredicate = fuzzyMatch
+  , sorter          = fuzzySort
+  , height          = 30
+  }
