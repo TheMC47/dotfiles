@@ -30,10 +30,8 @@ import           XMonad.Layout.LayoutHints
 import           XMonad.Layout.MultiToggle
 import           XMonad.Layout.MultiToggle.Instances
 import           XMonad.Layout.NoBorders
-import           XMonad.Layout.PerWorkspace
 import           XMonad.Layout.Renamed
 import           XMonad.Layout.ResizableTile
-import           XMonad.Layout.SimplestFloat
 import           XMonad.Layout.Spacing
 import           XMonad.Prelude
 import           XMonad.Prompt
@@ -247,56 +245,12 @@ genTopicConfig ts = def { topicDirs          = myDirs ts
                         }
 
 topics :: [TopicItem]
-topics =
-  map only myWorkspaces
-    ++ [ TG
-         "I2DL"
-         "Studium/6.Semester/I2DL"
-         [(0, spawnHere emacs), (1, browse "https://niessner.github.io/I2DL/")]
-       , TI "Compilerbau I"
-            "Studium/6.Semester/Compilerbau I"
-            (openFileInDir "slides.pdf")
-       , TG -- Thesis
-         "Thesis"
-         "Studium/6.Semester/BA/bachelor-thesis-isabelle-linter"
-         [ (0, magitHere >> terminalHere)
-         , ( 1
-           , browse
-               "https://github.com/TheMC47/bachelor-thesis-isabelle-linter/projects/1"
-             >> terminalHere
-           )
-         ]
-       , TG -- ElBaldiya
-         "ElBaladiya"
-         "elBaladiya.tn/smartup-backend"
-         [ (0, magitHere >> terminalHere)
-         , (1, spawnHere "insomnia" >> terminalHere)
-         ]
-       , TI "h/Crypto Tracker"
-            "haskell/crypto-tracker"
-            (magitHere >> terminalHere)
-       , TG formalMethodsGroup
-            "Studium/FormalMethods"
-            [(0, spawnHere "eclipse" >> openDir), (1, mempty)]
-       , TI (book <> " Databases") "Studium/Datenbanksysteme" openDir
-       , TG "reschoole"
-            "Studium/SoftwareEngineering/SoftwareEngineering-WS2022-reschoole"
-            [(0, magitHere >> terminalHere), (1, terminalHere)]
-       , TG (book <> "DB - Project")
-            "Studium/Datenbanksysteme/project"
-            [(0, magitHere >> terminalHere), (1, terminalHere)]
-       ]
+topics = map only myWorkspaces
  where
   noAction :: Topic -> Dir -> TopicItem
   noAction n d = TI n d mempty
   only :: Topic -> TopicItem
   only n = noAction n "./"
-
-formalMethodsGroup :: String
-formalMethodsGroup = book <> " Formal Methods"
-
-kivworkspace :: String
-kivworkspace = formalMethodsGroup <> " - 2"
 
 addTopicGroup :: TopicItem -> X ()
 addTopicGroup TI{}    = mempty
@@ -435,7 +389,6 @@ myLayout =
     .   gaps [(U, 15), (R, 15), (L, 15), (D, 15)] -- along the screen, excluding docks
     .   mkToggle (single NBFULL) -- toggle full screen
     .   smartBorders
-    .   onWorkspace kivworkspace simplestFloat
     $   tiled
     ||| mtiled
     ||| full
@@ -457,11 +410,6 @@ myManageHook =
   manageHooks = generalRules ++ concat windowRules
   generalRules =
     [ className =? "discord" --> doShift (workspaceAt 8)
-    , className
-      =?   "sun-awt-X11-XFramePeer"
-      <||> className
-      =?   "Main"
-      -->  doShift kivworkspace
     , title =? "Netflix" <||> className =? "vlc" --> doFixAspect (16 / 9)
     ]
   windowRules =
