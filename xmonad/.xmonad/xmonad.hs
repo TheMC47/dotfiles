@@ -430,6 +430,27 @@ myManageHook =
 -- Status Bars
 ---------------------
 
+onLayout :: String -> ScreenId -> X Bool
+onLayout l sid = fromMaybe False <$> (== l) <$$> logLayoutOnScreen sid
+
+(<$$>) :: (Functor f, Functor g) => (a -> b) -> f (g a) -> f (g b)
+(<$$>) = fmap . fmap
+
+logF :: Logger
+logF = ifM (onLayout "F" 0) nwindows (return Nothing)
+ where
+  nwindows = flip withScreen 0 $ \ws -> do
+    let n = length . W.integrate' . W.stack . W.workspace $ ws
+    if n > 1 then return . Just . show $ n else return Nothing
+
+-- TODO export?
+withScreen :: (WindowScreen -> Logger) -> ScreenId -> Logger
+withScreen f n = do
+  ss <- withWindowSet $ return . W.screens
+  case find ((== n) . W.screen) ss of
+    Just s  -> f s
+    Nothing -> pure Nothing
+
 circleSep :: String
 circleSep =
   "<icon=circle_right.xpm/></fc>  <fc=#D8DEE9,#2E3440:0><icon=circle_left.xpm/>"
@@ -439,13 +460,17 @@ topPP =
   copiesPP (xmobarColor "green" "")
     <=< clickablePP
     .   filterOutWsPP [scratchpadWorkspaceTag]
-    $   def { ppCurrent = xmobarBorder "Bottom" myFgColor 4
-            , ppUrgent  = xmobarBorder "Bottom" "#CD3C66" 4
-            , ppVisible = xmobarBorder "Bottom" "#98a0b3" 1
-            , ppSep     = circleSep
-            , ppExtras = [logLayoutOnScreen 0, shortenL 50 (logTitleOnScreen 0)]
-            , ppOrder   = \(ws : _ : _ : extras) -> ws : extras
-            }
+    $   def
+          { ppCurrent = xmobarBorder "Bottom" myFgColor 4
+          , ppUrgent  = xmobarBorder "Bottom" "#CD3C66" 4
+          , ppVisible = xmobarBorder "Bottom" "#98a0b3" 1
+          , ppSep     = circleSep
+          , ppExtras  = [ logLayoutOnScreen 0
+                        , logF
+                        , shortenL 50 (logTitleOnScreen 0)
+                        ]
+          , ppOrder   = \(ws : _ : _ : extras) -> ws : extras
+          }
 
 secondaryPP :: ScreenId -> X PP
 secondaryPP s = pure $ def
