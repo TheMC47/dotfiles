@@ -21,6 +21,7 @@ import           XMonad.Hooks.EwmhDesktops
 import           XMonad.Hooks.InsertPosition
 import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
+import           XMonad.Hooks.Modal
 import           XMonad.Hooks.StatusBar
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Hooks.WindowSwallowing
@@ -104,6 +105,8 @@ main =
                        , ("M-S-q", shiftTo Prev inUse)
                        , ("M-c"  , windows copyToAll)
                        , ("M-S-c", killAllOtherCopies)
+                       , ("M-S-n", setMode noModModeLabel)
+                       , ("M-S-r", setMode overlayedFloatModeLabel)
                        ]
                       ++ screenKeys
                       ++ workspaceKeys
@@ -474,6 +477,7 @@ topPP =
           , ppExtras  = [ logLayoutOnScreen 0
                         , logF
                         , shortenL 50 (logTitleOnScreen 0)
+                        , logMode
                         ]
           , ppOrder   = \(ws : _ : _ : extras) -> ws : extras
           }
