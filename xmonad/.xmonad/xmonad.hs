@@ -5,7 +5,6 @@
 import           Data.Bifunctor
 import qualified Data.Map                      as M
 import           XMonad
-import           XMonad.Actions.CopyWindow
 import           XMonad.Actions.CycleWS
 import           XMonad.Actions.DynamicWorkspaceGroups
 import           XMonad.Actions.DynamicWorkspaces
@@ -103,8 +102,6 @@ main =
                        , ("M-q"  , moveTo Prev inUse)
                        , ("M-S-w", shiftTo Next inUse)
                        , ("M-S-q", shiftTo Prev inUse)
-                       , ("M-c"  , windows copyToAll)
-                       , ("M-S-c", killAllOtherCopies)
                        , ("M-S-n", setMode noModModeLabel)
                        , ("M-S-r", setMode overlayedFloatModeLabel)
                        ]
@@ -465,22 +462,18 @@ circleSep =
   "<icon=circle_right.xpm/></fc>  <fc=#D8DEE9,#2E3440:0><icon=circle_left.xpm/>"
 
 topPP :: X PP
-topPP =
-  copiesPP (xmobarColor "green" "")
-    <=< clickablePP
-    .   filterOutWsPP [scratchpadWorkspaceTag]
-    $   def
-          { ppCurrent = xmobarBorder "Bottom" myFgColor 4
-          , ppUrgent  = xmobarBorder "Bottom" "#CD3C66" 4
-          , ppVisible = xmobarBorder "Bottom" "#98a0b3" 1
-          , ppSep     = circleSep
-          , ppExtras  = [ logLayoutOnScreen 0
-                        , logF
-                        , shortenL 50 (logTitleOnScreen 0)
-                        , logMode
-                        ]
-          , ppOrder   = \(ws : _ : _ : extras) -> ws : extras
-          }
+topPP = clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $ def
+  { ppCurrent = xmobarBorder "Bottom" myFgColor 4
+  , ppUrgent  = xmobarBorder "Bottom" "#CD3C66" 4
+  , ppVisible = xmobarBorder "Bottom" "#98a0b3" 1
+  , ppSep     = circleSep
+  , ppExtras  = [ logLayoutOnScreen 0
+                , logF
+                , shortenL 50 (logTitleOnScreen 0)
+                , logMode
+                ]
+  , ppOrder   = \(ws : _ : _ : extras) -> ws : extras
+  }
 
 secondaryPP :: ScreenId -> X PP
 secondaryPP s = pure $ def
