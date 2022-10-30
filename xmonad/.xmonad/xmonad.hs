@@ -104,6 +104,8 @@ main =
                        , ("M-S-q", shiftTo Prev inUse)
                        , ("M-S-n", setMode noModModeLabel)
                        , ("M-S-r", setMode overlayedFloatModeLabel)
+                       , ("M-S-l", sendMessage MirrorExpand)
+                       , ("M-S-h", sendMessage MirrorShrink)
                        ]
                       ++ screenKeys
                       ++ workspaceKeys
