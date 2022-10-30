@@ -109,6 +109,7 @@ main =
                       ++ workspaceKeys
                       ++ emacsKeys
                       ++ ratioKeys
+                      ++ dynamicScratchpads
                       )
  where
   workspaceNumbers = [1 :: Int .. 9] <> [0]
@@ -116,6 +117,11 @@ main =
     [ ("M-" <> m <> show k, withNthWorkspace f i)
     | (k, i) <- zip workspaceNumbers [0 ..]
     , (m, f) <- [("", W.view), ("C-", W.greedyView), ("S-", W.shift)]
+    ]
+  dynamicScratchpads =
+    [ ("M1-" <> m <> show k, f ("dyn" <> show k))
+    | k      <- [0 :: Int .. 9]
+    , (m, f) <- [("C-", withFocused . toggleDynamicNSP), ("", dynamicNSPAction)]
     ]
   screenKeys =
     [ ("M-" <> m <> [key], screenWorkspace sc >>= (`whenJust` windows . f))
