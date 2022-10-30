@@ -125,14 +125,14 @@ main =
     ]
   screenKeys =
     [ ("M-" <> m <> [key], screenWorkspace sc >>= (`whenJust` windows . f))
-    | (key, sc) <- zip "po" [0 ..]
-    , (f  , m ) <- [(W.view, ""), (W.shift, "S-")]
-    ]
-    ++ [ ( "M-C-" <> [key]
-         , screenWorkspace sc >>= (`whenJust` windows . W.greedyView)
-         )
-       | (key, sc) <- zip "op" [0 ..]
-       ]
+      | (key, sc) <- zip "po" [0 ..]
+      , (f  , m ) <- [(W.view, ""), (W.shift, "S-")]
+      ]
+      ++ [ ( "M-C-" <> [key]
+           , screenWorkspace sc >>= (`whenJust` windows . W.greedyView)
+           )
+         | (key, sc) <- zip "op" [0 ..]
+         ]
   emacsKeys = makeSubmap
     "e"
     (spawn emacs)
