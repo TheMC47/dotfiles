@@ -1,10 +1,8 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.35.0.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: efe229d8230bf5b9ae6b4d855c309d3e76c1660f77ec72538df1b00970ccab53
 
 name:           xmobarrc
 version:        0.1.0.0
@@ -27,6 +25,8 @@ executable xmobar
   main-is: xmobarrc.hs
   other-modules:
       Paths_xmobarrc
+  hs-source-dirs:
+      ./
   ghc-options: -rtsopts -threaded -with-rtsopts=-N -Wall
   build-depends:
       base >=4.7 && <5

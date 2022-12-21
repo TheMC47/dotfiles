@@ -1,6 +1,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
+{-# OPTIONS_GHC -Wno-unused-top-binds #-}
 
 import           Data.Bifunctor
 import qualified Data.Map                      as M
@@ -22,6 +23,7 @@ import           XMonad.Hooks.ManageDocks
 import           XMonad.Hooks.ManageHelpers
 import           XMonad.Hooks.Modal
 import           XMonad.Hooks.StatusBar
+import           XMonad.Hooks.StatusBar.PP
 import           XMonad.Hooks.UrgencyHook
 import           XMonad.Hooks.WindowSwallowing
 import           XMonad.Layout.FixedAspectRatio
@@ -70,8 +72,8 @@ main =
                                                                    (not <$> checkDock)
                                                <> trayerPaddingXmobarEventHook
                         , logHook            = updatePointer (0.5, 0.5) (0, 0)
-                        , focusedBorderColor = myFgColor
-                        , normalBorderColor  = myBgColor
+                        , focusedBorderColor = colorText
+                        , normalBorderColor  = colorBase
                         , terminal           = myTerminal
                         , startupHook = spawn "pkill xembedsniproxy" >> addTopicGroups topics
                         }
@@ -104,6 +106,7 @@ main =
                        , ("M-S-q", shiftTo Prev inUse)
                        , ("M-S-n", setMode noModModeLabel)
                        , ("M-S-r", setMode overlayedFloatModeLabel)
+                       , ("M-S-b", spawn "brave")
                        , ("M-S-l", sendMessage MirrorExpand)
                        , ("M-S-h", sendMessage MirrorShrink)
                        ]
@@ -163,17 +166,21 @@ makeSubmap k action ks =
 myModMask :: KeyMask
 myModMask = mod4Mask
 
+textIcon = xmobarFont 1
+workspaceIcon = xmobarFont 2
+
 myWorkspaces :: [String]
 myWorkspaces = zipWith -- euum. yeah. I know. overengineered
   (<>)
-  (map ((<> ":") . show) [(1 :: Int) .. 10])
+  (map ((<> "") . show) [(1 :: Int) .. 10])
+  $ map workspaceIcon
   [ book
   ,
       -- 
     "\xf120"
   ,
       -- 
-    "\xf268"
+    "\xf002"
   ,
       -- 
     "\xf108"
@@ -459,19 +466,15 @@ withScreen f n = do
     Just s  -> f s
     Nothing -> pure Nothing
 
-circleSep :: String
-circleSep =
-  "<icon=circle_right.xpm/></fc>  <fc=#D8DEE9,#2E3440:0><icon=circle_left.xpm/>"
-
 topPP :: X PP
 topPP = clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $ def
-  { ppCurrent = xmobarBorder "Bottom" myFgColor 4
-  , ppUrgent  = xmobarBorder "Bottom" "#CD3C66" 4
-  , ppVisible = xmobarBorder "Bottom" "#98a0b3" 1
-  , ppSep     = circleSep
+  { ppCurrent = teal . xmobarBorder "Bottom" colorTeal 4
+  , ppUrgent  = red
+  , ppVisible = yellow . xmobarBorder "Bottom" colorText 1
+  , ppSep     = " | "
   , ppExtras  = [ logLayoutOnScreen 0
-                , logF
                 , shortenL 50 (logTitleOnScreen 0)
+                , logF
                 , logMode
                 ]
   , ppOrder   = \(ws : _ : _ : extras) -> ws : extras
@@ -480,7 +483,7 @@ topPP = clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $ def
 secondaryPP :: ScreenId -> X PP
 secondaryPP s = pure $ def
   { ppOrder  = \(_ : _ : _ : extras) -> extras
-  , ppSep    = circleSep
+  , ppSep     = " "
   , ppExtras = [ logCurrentOnScreen s
                , logLayoutOnScreen s
                , shortenL 50 $ logTitleOnScreen s
@@ -489,7 +492,9 @@ secondaryPP s = pure $ def
   }
 
 barSpawner :: ScreenId -> IO StatusBarConfig
-barSpawner 0       = pure $ statusBarProp "xmobar top" topPP <> trayerSB
+barSpawner 0       = pure $ statusBarProp "xmobar top" topPP
+  <> trayerSB
+
 barSpawner s@(S n) = pure $ statusBarPropTo
   ("_XMONAD_LOG__Secondary_" <> show n)
   ("xmobar secondary " <> show n)
@@ -505,11 +510,10 @@ trayerSB = statusBarGeneric
     , "--expand true"
     , "--monitor primary"
     , "--transparent true"
-    , "--alpha 0"
+    , "--alpha 40"
     , "-l"
-    , "--tint 0x2E3440"
-    , "--height 30"
-    , "--margin 27"
+    , "--tint 0x303446"
+    , "--height 25"
     ]
   )
   mempty
@@ -531,3 +535,57 @@ myXPConfig = def
   , sorter          = fuzzySort
   , height          = 30
   }
+
+
+colorRosewater = "#f2d5cf"
+rosewater = xmobarColor colorRosewater ""
+colorFlamingo = "#eebebe"
+flamingo = xmobarColor colorFlamingo ""
+colorPink = "#f4b8e4"
+pink = xmobarColor colorPink ""
+colorMauve = "#ca9ee6"
+mauve = xmobarColor colorMauve ""
+colorRed = "#e78284"
+red = xmobarColor colorRed ""
+colorMaroon = "#ea999c"
+maroon = xmobarColor colorMaroon ""
+colorPeach = "#ef9f76"
+peach = xmobarColor colorPeach ""
+colorYellow = "#e5c890"
+yellow = xmobarColor colorYellow ""
+colorGreen = "#a6d189"
+green = xmobarColor colorGreen ""
+colorTeal = "#81c8be"
+teal = xmobarColor colorTeal ""
+colorSky = "#99d1db"
+sky = xmobarColor colorSky ""
+colorSapphire = "#85c1dc"
+sapphire = xmobarColor colorSapphire ""
+colorBlue = "#8caaee"
+blue = xmobarColor colorBlue ""
+colorLavender = "#babbf1"
+lavender = xmobarColor colorLavender ""
+colorText = "#c6d0f5"
+text = xmobarColor colorText ""
+colorSubtext1 = "#b5bfe2"
+subtext1 = xmobarColor colorSubtext1 ""
+colorSubtext0 = "#a5adce"
+subtext0 = xmobarColor colorSubtext0 ""
+colorOverlay2 = "#949cbb"
+overlay2 = xmobarColor colorOverlay2 ""
+colorOverlay1 = "#838ba7"
+overlay1 = xmobarColor colorOverlay1 ""
+colorOverlay0 = "#737994"
+overlay0 = xmobarColor colorOverlay0 ""
+colorSurface2 = "#626880"
+surface2 = xmobarColor colorSurface2 ""
+colorSurface1 = "#51576d"
+surface1 = xmobarColor colorSurface1 ""
+colorSurface0 = "#414559"
+surface0 = xmobarColor colorSurface0 ""
+colorBase = "#303446"
+base = xmobarColor colorBase ""
+colorMantle = "#292c3c"
+mantle = xmobarColor colorMantle ""
+colorCrust = "#232634"
+crust = xmobarColor colorCrust ""

@@ -17,6 +17,7 @@ library
       X11
     , base >=4.7 && <5
     , containers
+    , directory
     , flow
     , process
     , split
@@ -35,6 +36,7 @@ executable xmonad-private
       X11
     , base >=4.7 && <5
     , containers
+    , directory
     , flow
     , process
     , split

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-feh --bg-scale Wallpapers/wolf.jpg &
+feh --bg-fill Wallpapers/mountain.png &
 xmodmap ~/.Xmodmap &
 picom --config ~/picom.conf &
 dunst &

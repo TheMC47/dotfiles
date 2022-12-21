@@ -1,9 +1,9 @@
-resolver: lts-18.5
+resolver: lts-19.20
 
 packages:
   - .
 
 extra-deps:
-  - X11-xft-0.3.1
-  - xmonad-0.17.0
-  - xmonad-contrib-0.17.0
+  - X11-xft-0.3.4
+  - /home/yecinem/xmonad-contrib
+  - /home/yecinem/xmonad

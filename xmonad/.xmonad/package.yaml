@@ -12,6 +12,7 @@ dependencies:
     - unix
     - split
     - utf8-string
+    - directory
 
 library:
     source-dirs: .

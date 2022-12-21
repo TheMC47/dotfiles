@@ -24,7 +24,7 @@ dependencies:
 
 executables:
   xmobar:
-    source-dirs: src
+    source-dirs: .
     main: xmobarrc.hs
     ghc-options:
       -rtsopts
