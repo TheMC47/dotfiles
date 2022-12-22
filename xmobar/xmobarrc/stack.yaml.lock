@@ -5,12 +5,16 @@
 
 packages:
 - completed:
-    hackage: xmobar-0.45@sha256:8845b68837ef59323deacda8a27a363e17e99c42019b348eeff94a4f2d9a909d,14911
+    commit: 3f7a00defc69f9739c21390f6ba05990ff936b2b
+    git: https://codeberg.org/xmobar/xmobar.git
+    name: xmobar
     pantry-tree:
-      sha256: bcc0846ac538ffb307d766059388573dbfbf4359322cad3cef7bddad67fcfb48
-      size: 9769
+      sha256: 9ba8eac077db4eeeb86fadd0cc8afa85b7e9167bcf0fed3b62161e2234f1d87c
+      size: 10657
+    version: '0.45'
   original:
-    hackage: xmobar-0.45
+    commit: 3f7a00defc69f9739c21390f6ba05990ff936b2b
+    git: https://codeberg.org/xmobar/xmobar.git
 - completed:
     hackage: cairo-0.13.8.2@sha256:ef1709c3c4d2c6d68a9a51d9f220dccc0745f6468d2d0868c15a7ecdf8f325a1,4078
     pantry-tree:

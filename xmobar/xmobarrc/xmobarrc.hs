@@ -20,7 +20,7 @@ baseConfig = defaultConfig
 topBar :: Config
 topBar = baseConfig
   { commands = myCommands
-  , position = OnScreen 0 (TopSize L 100 25)
+  , position = OnScreen 0 (TopHM 30 26 26 15 0)
   , template = green " >>=" <> " %UnsafeXMonadLog%}{%cpu% %memory% %battery% %time% %date% %_XMONAD_TRAYPAD%"
   }
 
