@@ -50,7 +50,6 @@ import           XMonad.Util.NamedScratchpad
                                          hiding ( name )
 
 myBgColor = "#2E3440"
-
 myFgColor = "#D8DEE9"
 
 main :: IO ()
@@ -470,7 +469,7 @@ topPP :: X PP
 topPP = clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $ def
   { ppCurrent = teal . xmobarBorder "Bottom" colorTeal 4
   , ppUrgent  = red
-  , ppVisible = yellow . xmobarBorder "Bottom" colorText 1
+  , ppVisible = yellow . xmobarBorder "Bottom" colorYellow 1
   , ppSep     = " | "
   , ppExtras  = [ logLayoutOnScreen 0
                 , shortenL 50 (logTitleOnScreen 0)
@@ -483,7 +482,7 @@ topPP = clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $ def
 secondaryPP :: ScreenId -> X PP
 secondaryPP s = pure $ def
   { ppOrder  = \(_ : _ : _ : extras) -> extras
-  , ppSep     = " "
+  , ppSep     = " | "
   , ppExtras = [ logCurrentOnScreen s
                , logLayoutOnScreen s
                , shortenL 50 $ logTitleOnScreen s

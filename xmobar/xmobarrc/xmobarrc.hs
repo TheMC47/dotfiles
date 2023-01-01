@@ -29,10 +29,10 @@ topBar = baseConfig
 secondary :: Int -> Config
 secondary i = baseConfig
   { template =
-    "%"
+    green " >>=" <> " %"
     <> customProp
     <> "%}{"
-  , position = OnScreen i (TopSize L 100 30)
+  , position = OnScreen i (TopHM 30 26 26 15 0)
   , commands = [Run $ UnsafeXPropertyLog customProp]
   }
   where customProp = "_XMONAD_LOG__Secondary_" <> show i
