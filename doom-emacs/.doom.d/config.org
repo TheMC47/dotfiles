@@ -111,10 +111,11 @@ And almost always, whenever I'm opening a new project, I want to see the magit b
 (add-hook! python-mode
   (flycheck-select-checker 'python-flake8))
 (put 'py-isort-options 'safe-local-variable #'listp)
+(setq-hook! 'python-mode-hook +format-with-lsp nil)
 #+end_src
 * Haskell
 #+begin_src emacs-lisp
-(setq lsp-haskell-formatting-provider "brittany")
+(setq lsp-haskell-formatting-provider "fourmolu")
 #+end_src
 * JavaScript
 #+begin_src emacs-lisp
