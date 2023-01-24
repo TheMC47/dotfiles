@@ -120,6 +120,7 @@ main =
                           , ("M-S-h", sendMessage MirrorShrink)
                           , ("M-z", killAllStatusBars)
                           , ("M-S-z", startAllStatusBars)
+                          , ("M-S-s", spawn "slock")
                           ]
                             ++ screenKeys
                             ++ workspaceKeys
