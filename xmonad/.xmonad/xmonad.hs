@@ -67,9 +67,9 @@ main =
                         , workspaces         = topicNames topics
                         , layoutHook         = myLayout
                         , handleEventHook    = windowedFullscreenFixEventHook
-                                               <> swallowEventHook (className =? "Alacritty")
-                                                                   (not <$> checkDock)
-                                               <> trayPaddingXmobarEventHook (className =? "stalonetray") "_XMONAD_TRAYPAD"
+                                               <> swallowEventHook (className =? "Alacritty") (not <$> checkDock)
+                                               <> trayerPaddingXmobarEventHook
+                                               <> trayerAboveXmobarEventHook
                         , logHook            = updatePointer (0.5, 0.5) (0, 0)
                         , focusedBorderColor = colorText
                         , normalBorderColor  = colorBase
@@ -499,7 +499,23 @@ barSpawner s@(S n) = pure $ statusBarPropTo
   (secondaryPP s)
 
 traySB :: StatusBarConfig
-traySB = statusBarGeneric "stalonetray" mempty
+traySB =
+  statusBarGeneric
+    ( unwords
+        [ "trayer",
+          "--edge top",
+          "--align right",
+          "--widthtype request",
+          "--expand true",
+          "--monitor primary",
+          "-l",
+          "--tint 0x2E3440",
+          "--height 30",
+          "--distancefrom top,right",
+          "--distance 15,26"
+        ]
+    )
+    mempty
 
 ---------------------
 -- Prompt
