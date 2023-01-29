@@ -50,6 +50,7 @@ alias free='free -m'                      # show sizes in MB
 alias np='nano -w PKGBUILD'
 alias sspi="ssh pi@192.168.1.2"
 alias ls="ls --color=auto"
+alias grep="grep --color=auto"
 
 alias django-test="./manage.py test"
 alias django-runserver="./manage.py runserver"
