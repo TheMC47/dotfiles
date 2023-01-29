@@ -58,6 +58,11 @@ alias django-shell="./manage.py shell"
 alias django-migrate="./manage.py migrate"
 alias django-makemigrations="./manage.py makemigrations"
 
+## Keybindings
+bindkey "^[[3~" delete-char
+bindkey "^[[H" beginning-of-line
+bindkey "^[[F" end-of-line
+
 ## Editor
 export EDITOR="emacs -nw"
 alias emacs="emacs -nw"
