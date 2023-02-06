@@ -39,7 +39,8 @@
 
 ;; Use `:pin' to specify a particular commit to install.
 ;(package! builtin-package :pin "1a2b3c4d5e")
-
+(package! scala-mode :pin "5d7cf21c37e345c49f921fe5111a49fd54efd1e0")
+(package! lsp-metals :pin "a2df7263ece6ac69214e41c52d66aab8d3f650eb")
 
 ;; Doom's packages are pinned to a specific commit and updated from release to
 ;; release. The `unpin!' macro allows you to unpin single packages...
