@@ -1,5 +1,5 @@
 import:
-  - ~/.config/alacritty/catppuccin/catppuccin-frappe.yml
+  - ~/.config/alacritty/catppuccin-frappe.yml
 font:
   normal:
     family: "FiraCode Nerd Font Mono"
