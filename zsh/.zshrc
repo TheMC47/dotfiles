@@ -14,8 +14,9 @@ compinit
 
 # Plugins
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/.zsh/omz/sudo.plugin.zsh
 source ~/.zsh/omz/stack.plugin.zsh
+source ~/.zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+ZVM_CURSOR_STYLE_ENABLED=false
 
 colors() {
 	local fgc bgc vals seq0
@@ -97,7 +98,7 @@ ex ()
 }
 
 # Add doom binary to the path
-export PATH=$PATH:$HOME/.emacs.d/bin
+export PATH=$PATH:$HOME/.config/emacs/bin
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -116,12 +117,5 @@ unset __conda_setup
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 eval "$(thefuck --alias)"
-
-
-# neofetch
-
-random-quote | cowsay
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+eval "$(zoxide init zsh)"
+alias cd=z
