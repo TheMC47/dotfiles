@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+config=~/.config/kmonad/config.kbd
+
+# Kill existing kmonad processes
+pkill kmonad
+
+# Activate KMonad for internal keyboard
+echo "Activate KMonad for internal keyboard"
+KBD_ENV="/dev/input/by-path/platform-i8042-serio-0-event-kbd"
+
+doStartKmonad() {
+    export KBD_ENV
+    KBDCFG=$(envsubst < "$config")
+    kmonad <(echo "$KBDCFG") & disown
+}
+
+doStartKmonad
+
+keyb="/dev/input/by-id/usb-Corsair_Corsair_Gaming_K63_Keyboard_0800C011AF7B98475F882970F5001C07-event-kbd"
+if [[ -e $keyb ]]; then
+    echo "Activate KMonad for Corsair K63 keyboard"
+    KBD_ENV="$keyb"
+    doStartKmonad
+fi
+
+grepEvtest() {
+    RES=$(echo | evtest 2>&1 | grep "$1" | grep -o "^[^:]*")
+    # For each of the results, set KBD_ENV and start kmonad
+    for KBD_ENV in $RES; do
+        echo "Activate KMonad for $1 keyboard"
+        doStartKmonad
+    done
+}
+
+grepEvtest "Logitech MX Keys"
+grepEvtest "MX Keys Keyboard"

@@ -1,0 +1,38 @@
+(defcfg
+  input  (device-file "$KBD_ENV")
+  output (uinput-sink "My KMonad output" "sleep 1 && setxkbmap -option compose:menu")
+  cmp-seq cmps
+  cmp-seq-delay 5 ;; 5ms delay between each compose-key sequence press
+  fallthrough true
+  allow-cmd false
+)
+
+
+#|---------------
+(defsrc
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11   f12
+  ^    1    2    3    4    5    6    7    8    9
+  tab  q    w    e    r    t    z    u    i    o    p    ü     +        ret
+  caps a    s    d    f    g    h    j    k    l    ö    ä     #
+  lsft 102d z    x    c    v    b    n    m    ,    .    /              rsft
+  wkup lctl lmet lalt           spc            ralt cmps rctl
+
+)
+----------------------------------------------------------------|#
+
+(defsrc
+  esc
+
+  caps a s d f)
+
+(defalias
+    ctl_a (tap-hold-next-release 300 a lctl)
+    met_s (tap-hold-next-release 300 s lmet)
+    alt_d (tap-hold-next-release 300 d lalt)
+    sft_f (tap-hold-next-release 300 f lsft)
+)
+
+(deflayer base
+  caps
+
+  esc @ctl_a @met_s @alt_d @sft_f)
