@@ -62,7 +62,10 @@ main =
     . docks
     . dynamicSBs barSpawner
     . javaHack
-    . addAfterRescreenHook (spawn "autorandr --change" >> spawn "feh --bg-fill Wallpapers/mountain.png")
+    . addAfterRescreenHook
+      ( spawn "autorandr --change"
+          >> spawn "feh --bg-fill Wallpapers/mountain.png"
+      )
     . withUrgencyHook NoUrgencyHook
     . ewmh
     $ def
@@ -91,7 +94,7 @@ main =
                           , ("M-d", rofi)
                           , ("M-b", toggleCollapse)
                           , ("M-f", toggleFullScreen)
-                          , ("M1-C-q", kill)
+                          , ("M-c", kill)
                           , ("M-S-x", logout)
                           , ("M-C-q", xmonadRecompile)
                           , -- Prompts
@@ -119,7 +122,7 @@ main =
                           , ("M-S-l", sendMessage MirrorExpand)
                           , ("M-S-h", sendMessage MirrorShrink)
                           , ("M-z", killAllStatusBars)
-                          , ("M-S-z", startAllStatusBars)
+                          , ("M-S-z", killAllStatusBars >> startAllStatusBars)
                           , ("M-S-s", spawn "slock")
                           ]
                             ++ screenKeys
@@ -339,8 +342,15 @@ withTitleT c = "--title " <> c <> " "
 inDirT :: ShowS
 inDirT dir = "--working-directory \"" <> dir <> "\""
 
+terminalIn :: String -> X ()
+terminalIn = spawnHere . inTerminal . inDirT
+
+terminalFromProjectDir :: String -> X ()
+terminalFromProjectDir loc =
+  terminalIn . (\d -> d <> "/" <> loc) =<< currentTopicDir topicConfig
+
 terminalHere :: X ()
-terminalHere = spawnHere . inTerminal . inDirT =<< currentTopicDir topicConfig
+terminalHere = terminalIn =<< currentTopicDir topicConfig
 
 emacs :: String
 emacs = "emacsclient -a '' -create-frame --no-wait "
