@@ -529,7 +529,7 @@ secondaryPP s =
           ]
       }
 
-barSpawner :: ScreenId -> IO StatusBarConfig
+barSpawner :: ScreenId -> X StatusBarConfig
 barSpawner 0 = pure $ statusBarProp (withLog "xmobar top") topPP <> traySB
 barSpawner s@(S n) =
   pure $
