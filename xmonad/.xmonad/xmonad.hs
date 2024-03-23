@@ -50,6 +50,7 @@ import XMonad.Util.Loggers
 import XMonad.Util.NamedScratchpad hiding (
   name,
  )
+import XMonad.Util.StickyWindows
 
 myBgColor = "#2E3440"
 
@@ -58,6 +59,7 @@ myFgColor = "#D8DEE9"
 main :: IO ()
 main =
   xmonad
+    . sticky
     . setEwmhActivateHook doAskUrgent
     . docks
     . dynamicSBs barSpawner
@@ -124,6 +126,8 @@ main =
                           , ("M-z", killAllStatusBars)
                           , ("M-S-z", killAllStatusBars >> startAllStatusBars)
                           , ("M-S-s", spawn "slock")
+                          , ("M-S-u", withFocused stick)
+                          , ("M-S-i", withFocused unstick)
                           ]
                             ++ screenKeys
                             ++ workspaceKeys
