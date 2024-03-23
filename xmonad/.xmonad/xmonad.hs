@@ -145,8 +145,9 @@ main =
   dynamicScratchpads =
     [ ("M1-" <> m <> show k, f ("dyn" <> show k))
     | k <- [0 :: Int .. 9]
-    , (m, f) <- [("C-", withFocused . toggleDynamicNSP), ("", dynamicNSPAction)]
+    , (m, f) <- [("C-", withFocused . toggleDynamicNSPAndFloat), ("", dynamicNSPAction)]
     ]
+  toggleDynamicNSPAndFloat s w = toggleDynamicNSP s w >> float w -- kinda works
   screenKeys =
     [ ("M-" <> m <> [key], screenWorkspace sc >>= (`whenJust` windows . f))
     | (key, sc) <- zip "po" [0 ..]
