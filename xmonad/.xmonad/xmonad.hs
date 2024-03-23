@@ -526,12 +526,12 @@ secondaryPP s =
       }
 
 barSpawner :: ScreenId -> IO StatusBarConfig
-barSpawner 0 = pure $ statusBarProp "xmobar top" topPP <> traySB
+barSpawner 0 = pure $ statusBarProp (withLog "xmobar top") topPP <> traySB
 barSpawner s@(S n) =
   pure $
     statusBarPropTo
       ("_XMONAD_LOG__Secondary_" <> show n)
-      ("xmobar secondary " <> show n)
+      (withLog ("xmobar secondary " <> show n))
       (secondaryPP s)
 
 traySB :: StatusBarConfig
@@ -552,6 +552,9 @@ traySB =
         ]
     )
     mempty
+
+withLog :: String -> String
+withLog = ("systemd-cat --priority=info --stderr-priority=warning --level-prefix=false -- " <>)
 
 ---------------------
 -- Prompt
