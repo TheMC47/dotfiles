@@ -4,3 +4,6 @@
 [submodule "xmonad/.xmonad/xmonad-contrib"]
 	path = xmonad/.xmonad/xmonad-contrib
 	url = git@github.com:TheMC47/xmonad-contrib.git
+[submodule "zsh/.zsh/zsh-vi-mode"]
+	path = zsh/.zsh/zsh-vi-mode
+	url = https://github.com/jeffreytse/zsh-vi-mode.git
