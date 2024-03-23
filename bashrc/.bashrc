@@ -210,7 +210,7 @@ togglePlasma(){
 }
 
 random-quote | cowsay
-export BROWSER="/usr/bin/chromium"
+export BROWSER="/usr/bin/brave"
 
 eval "$(starship init bash)"
 eval $(thefuck --alias)

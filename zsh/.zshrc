@@ -68,10 +68,16 @@ bindkey "^[[F" end-of-line
 export EDITOR="emacs -nw"
 alias emacs="emacs -nw"
 
+export BROWSER="/usr/bin/brave"
+
 ## GHCUP
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
 export GHCUP_INSTALL_BASE_PREFIX=$HOME
 export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
+
+# BAT
+export BAT_THEME="Sublime Snazzy"
+alias cat="bat"
 
 # ex - archive extractor
 # usage: ex <file>
