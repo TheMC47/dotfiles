@@ -23,16 +23,15 @@
 (defsrc
   esc
 
-  caps a s d f)
+  caps a s d)
 
 (defalias
     ctl_a (tap-hold-next-release 300 a lctl)
     met_s (tap-hold-next-release 300 s lmet)
     alt_d (tap-hold-next-release 300 d lalt)
-    sft_f (tap-hold-next-release 300 f lsft)
 )
 
 (deflayer base
   caps
 
-  esc @ctl_a @met_s @alt_d @sft_f)
+  esc @ctl_a @met_s @alt_d)
