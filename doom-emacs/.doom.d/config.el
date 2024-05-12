@@ -36,6 +36,7 @@
 
 (setq +workspaces-switch-project-function #'open-magit-or-dired)
 
+(setq lsp-haskell-formatting-provider "fourmolu")
 
 (setq-hook! #'typescript-tsx-mode +format-with-lsp nil)
 (setq-hook! 'typescript-mode-hook +format-with-lsp nil)
