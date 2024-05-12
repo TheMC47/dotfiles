@@ -1,0 +1,12 @@
+import = ["/home/yecinem/.config/alacritty/catppuccin/catppuccin-frappe.toml"]
+live_config_reload = true
+
+[font]
+size = 12
+
+[font.normal]
+family = "FiraCode Nerd Font Mono"
+style = "Retina"
+
+[window]
+opacity = 1
