@@ -5,5 +5,7 @@ packages:
 
 extra-deps:
   - X11-xft-0.3.4
-  - /home/yecinem/xmonad-contrib
-  - /home/yecinem/xmonad
+  - github: TheMC47/xmonad
+    commit: "b6dc78bee78d45ec223cce4b6b49d7e200bcd8f1"
+  - github: TheMC47/xmonad-contrib
+    commit: "5d6bc227ebef04a3f8ddb6093dc421866d6bad2e"

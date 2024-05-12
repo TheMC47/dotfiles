@@ -67,6 +67,7 @@ main =
     . addAfterRescreenHook
       ( spawn "autorandr --change"
           >> spawn "feh --bg-fill Wallpapers/mountain.png"
+          >> spawn "startKmonad"
       )
     . withUrgencyHook NoUrgencyHook
     . ewmh

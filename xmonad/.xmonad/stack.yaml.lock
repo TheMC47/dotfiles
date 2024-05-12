@@ -11,6 +11,28 @@ packages:
       size: 330
   original:
     hackage: X11-xft-0.3.4
+- completed:
+    name: xmonad
+    pantry-tree:
+      sha256: 39588e41ec60dad1c73e1a4c14840469a90477b4040cfa928a752a154212e5cf
+      size: 3972
+    sha256: 57fce94c8ff26ae07e20617ed20b147f0a2348a59a15da93643ac66aac6fc675
+    size: 110707
+    url: https://github.com/TheMC47/xmonad/archive/b6dc78bee78d45ec223cce4b6b49d7e200bcd8f1.tar.gz
+    version: 0.18.0.9
+  original:
+    url: https://github.com/TheMC47/xmonad/archive/b6dc78bee78d45ec223cce4b6b49d7e200bcd8f1.tar.gz
+- completed:
+    name: xmonad-contrib
+    pantry-tree:
+      sha256: 7d0bb8d5598c84d57231edabb4c4474a1d90aac7047b068227af09e3aedc98cd
+      size: 25498
+    sha256: cec5fcedd28e2ca0bf155fed3e2079f640513d9d5addbdfbaaef34e4d040a233
+    size: 713433
+    url: https://github.com/TheMC47/xmonad-contrib/archive/5d6bc227ebef04a3f8ddb6093dc421866d6bad2e.tar.gz
+    version: 0.18.0.9
+  original:
+    url: https://github.com/TheMC47/xmonad-contrib/archive/5d6bc227ebef04a3f8ddb6093dc421866d6bad2e.tar.gz
 snapshots:
 - completed:
     sha256: afd5ba64ab602cabc2d3942d3d7e7dd6311bc626dcb415b901eaf576cb62f0ea
