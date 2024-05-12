@@ -5,15 +5,15 @@
 
 packages:
 - completed:
-    commit: 53c7c0848b9b7dc3b50e0b0acefbfda6ce4ac1a9
+    commit: 991a168de5d79314a1346a24c579c5049208b054
     git: https://codeberg.org/xmobar/xmobar.git
     name: xmobar
     pantry-tree:
-      sha256: 5af870d67b2058d3d0a2b868e84e5cbf58dd72eb1eb98c4749b7ea50fc36147a
-      size: 10657
-    version: '0.46'
+      sha256: 11b9ca5809b095cca5ce7f26dc94ae59b89cc6e202931c7385895bb91ebb6604
+      size: 10662
+    version: 0.47.4
   original:
-    commit: 53c7c0848b9b7dc3b50e0b0acefbfda6ce4ac1a9
+    commit: 991a168de5d79314a1346a24c579c5049208b054
     git: https://codeberg.org/xmobar/xmobar.git
 - completed:
     hackage: cairo-0.13.8.2@sha256:ef1709c3c4d2c6d68a9a51d9f220dccc0745f6468d2d0868c15a7ecdf8f325a1,4078
@@ -45,7 +45,7 @@ packages:
     hackage: glib-0.13.8.2@sha256:f44b829e741b3c3244d523f60b058701dfc067ff64c2ba61d43be4cccfc2663d,3156
 snapshots:
 - completed:
-    sha256: a2cbcd2f37010a64c4ef74c21fd7e55982a07b49840d2bed306f9bac9981a9c3
-    size: 648420
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/0.yaml
-  original: lts-20.0
+    sha256: afd5ba64ab602cabc2d3942d3d7e7dd6311bc626dcb415b901eaf576cb62f0ea
+    size: 640060
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/21/22.yaml
+  original: lts-21.22
