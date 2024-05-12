@@ -75,6 +75,9 @@ export BROWSER="/usr/bin/brave"
 export GHCUP_INSTALL_BASE_PREFIX=$HOME
 export PATH=$GHCUP_INSTALL_BASE_PREFIX/.ghcup/bin:$PATH
 
+## Cabal
+export PATH=$HOME/.cabal/bin:$PATH
+
 # BAT
 export BAT_THEME="Sublime Snazzy"
 alias cat="bat"
