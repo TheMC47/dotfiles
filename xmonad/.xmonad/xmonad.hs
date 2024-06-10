@@ -1,4 +1,5 @@
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
@@ -45,6 +46,7 @@ import XMonad.Prompt.XMonad
 import qualified XMonad.StackSet as W
 import XMonad.Util.ClickableWorkspaces
 import XMonad.Util.EZConfig
+import qualified XMonad.Util.ExtensibleState as XS
 import XMonad.Util.Hacks
 import XMonad.Util.Loggers
 import XMonad.Util.NamedScratchpad hiding (
@@ -124,8 +126,7 @@ main =
                           , ("M-S-b", spawn "brave")
                           , ("M-S-l", sendMessage MirrorExpand)
                           , ("M-S-h", sendMessage MirrorShrink)
-                          , ("M-z", killAllStatusBars)
-                          , ("M-S-z", killAllStatusBars >> startAllStatusBars)
+                          , ("M-z", toggleStatusBar)
                           , ("M-S-s", spawn "slock")
                           , ("M-S-u", withFocused stick)
                           , ("M-S-i", withFocused unstick)
@@ -684,3 +685,20 @@ mantle = xmobarColor colorMantle ""
 colorCrust = "#232634"
 
 crust = xmobarColor colorCrust ""
+
+data StatusBarState = Enabled | Disabled
+  deriving (Read, Show)
+
+instance ExtensionClass StatusBarState where
+  initialValue = Enabled
+  extensionType = PersistentExtension
+
+toggleStatusBar :: X ()
+toggleStatusBar =
+  XS.get >>= \case
+    Enabled -> do
+      killAllStatusBars
+      XS.put Disabled
+    Disabled -> do
+      startAllStatusBars
+      XS.put Enabled
