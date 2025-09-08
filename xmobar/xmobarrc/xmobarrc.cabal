@@ -1,34 +1,20 @@
-cabal-version: 1.12
+cabal-version:      3.0
+name:               xmobarrc
+version:            0.1.0.0
 
--- This file has been generated from package.yaml by hpack version 0.35.0.
---
--- see: https://github.com/sol/hpack
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Yecine Megdiche
+maintainer:         yecine.megdiche@gmail.com
+build-type:         Simple
 
-name:           xmobarrc
-version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/AoC2020#readme>
-homepage:       https://github.com/githubuser/AoC2020#readme
-bug-reports:    https://github.com/githubuser/AoC2020/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
-license:        BSD3
-build-type:     Simple
-extra-source-files:
-    README.md
-
-source-repository head
-  type: git
-  location: https://github.com/githubuser/AoC2020
+common warnings
+    ghc-options: -Wall
 
 executable xmobar
-  main-is: xmobarrc.hs
-  other-modules:
-      Paths_xmobarrc
-  hs-source-dirs:
-      ./
-  ghc-options: -rtsopts -threaded -with-rtsopts=-N -Wall
-  build-depends:
-      base >=4.7 && <5
-    , xmobar
-  default-language: Haskell2010
+    import:           warnings
+    main-is:          xmobarrc.hs
+    build-depends:    base ^>=4.18.3.0
+                    , xmobar == 0.50
+    hs-source-dirs:   .
+    default-language: Haskell2010

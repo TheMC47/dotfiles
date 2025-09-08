@@ -114,8 +114,8 @@ myCommands =
   ]
 
 mainFont = "Fira Code 12"
-iconFont = "Font Awesome 6 Free 10"
-workspaceIconFont = "Font Awesome 6 Free 9"
+iconFont = "Font Awesome 7 Free 10"
+workspaceIconFont = "Font Awesome 7 Free 11"
 
 textIcon = xmobarFont 1
 workspaceIcon = xmobarFont 2
@@ -125,7 +125,7 @@ cpuIcon = textIcon "\xf2db" -- 
 clockIcon = textIcon "\xf017"
 calendarIcon = textIcon "\xf133"
 batteryFullIcon = textIcon "\xf240"
-batteryMediumIcon = textIcon "\f242"
+batteryMediumIcon = textIcon "\xf242"
 batteryLowIcon = textIcon "\xf243"
 batteryChargingIcon = textIcon "\xf1e6 \xf240"
 

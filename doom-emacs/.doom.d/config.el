@@ -1,14 +1,15 @@
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;; ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 (setq user-full-name "Yecine Megdiche"
       user-mail-address "yecine.megdiche@gmail.com")
 (setq truncate-lines nil)
-(setq doom-font (font-spec :family "Fira Code" :size 14))
+(setq doom-font (font-spec :family "Fira Code" :size 12.0))
+(setq doom-font-increment 1.0)
 
-(setq doom-catppuccin-dark-variant "frappe")
-(setq doom-theme 'doom-catppuccin)
+;; (setq catppuccin-flavor 'frappe)
+;; (load-theme 'catppuccin t t)
+(setq doom-theme 'modus-vivendi-tinted)
 (setq display-line-numbers-type `relative)
-(setq doom-themes-treemacs-theme "doom-colors")
 (setq-default indent-tabs-mode nil)
 (setq fancy-splash-image (concat doom-user-dir "club-mate.svg"))
 
@@ -38,12 +39,20 @@
 
 (setq lsp-haskell-formatting-provider "fourmolu")
 
-(setq-hook! #'typescript-tsx-mode +format-with-lsp nil)
-(setq-hook! 'typescript-mode-hook +format-with-lsp nil)
+(after! lsp-ui-mode
+  (set-lookup-handlers! 'lsp-mode
+    :definition #'+lsp-lookup-definition-handler
+    :references #'+lsp-lookup-references-handler))
+
+(add-hook! 'typescript-mode-hook
+  (add-function :before-while (local 'tree-sitter-hl-face-mapping-function)
+                (lambda (capture-name)
+                  (pcase capture-name
+                    ("private" 'font-lock-comment-face)))))
 
 (setq pdf-view-resize-factor 1.1)
-(use-package! frames-only-mode
-  :hook (after-init . frames-only-mode))
+;; (use-package! frames-only-mode
+;;   :hook (after-init . frames-only-mode))
 (after! persp-mode
   (setq persp-emacsclient-init-frame-behaviour-override "main"))
 
@@ -65,3 +74,47 @@
              tree-sitter-hl-face:comment
              tree-sitter-hl-face:doc)
            flyspell-lazy-idle-seconds 0.5)))
+
+
+(custom-set-faces!
+  '(corfu-current :background "#51576d"))
+
+(setq! corfu-preselect 'valid)
+
+(setq! sql-postgres-login-params nil)
+
+(defun my/ts-visit-test (arg)
+  "Visit the test file for the current buffer."
+  (interactive "P")
+  (if (not (derived-mode-p 'typescript-mode))
+      (message "Not in a typescript file!")
+    (let* ((file-name (file-name-sans-extension buffer-file-name))
+           (unit-test (not arg))
+           (test-file (if unit-test
+                          (concat file-name ".spec.ts")
+                        (concat file-name ".integration-spec.ts"))))
+      (if (file-exists-p test-file)
+          (find-file test-file)
+        (if (yes-or-no-p (format "Test file %s does not exist. Create it?" test-file))
+            (find-file test-file))))))
+
+
+(defun my/ts-toggle-test (arg)
+  "Toggle between implementation and test file."
+  (interactive "P")
+  (if (not (derived-mode-p 'typescript-mode))
+      (message "Not in a typescript file!")
+    (if (string-match-p "spec" buffer-file-name)
+        (let* ((base-file-name (file-name-sans-extension (file-name-sans-extension buffer-file-name)))
+               (src-file (concat base-file-name ".ts")))
+          (if (file-exists-p src-file)
+              (find-file src-file)
+            (message "File %s does not exist" src-file)))
+      (my/ts-visit-test arg))))
+
+
+(map! :after typescript-mode
+      :map typescript-mode-map
+      :leader
+      :desc "Visit test file" "o t" #'my/ts-visit-test
+      :desc "Toggle test file" "t t" #'my/ts-toggle-test)
