@@ -110,8 +110,8 @@
       (my/ts-visit-test arg))))
 
 
-(map! :after typescript-mode
-      :map typescript-mode-map
+(map! :after typescript-ts-mode
+      :map typescript-ts-mode-map
       :leader
       :desc "Visit test file" "o t" #'my/ts-visit-test
       :desc "Toggle test file" "t t" #'my/ts-toggle-test)
