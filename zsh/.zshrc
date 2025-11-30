@@ -11,6 +11,7 @@ zstyle :compinstall filename '/home/yecinem/.zshrc'
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select
+zstyle ':completion:*' special-dirs true
 
 # End of lines added by compinstall
 
