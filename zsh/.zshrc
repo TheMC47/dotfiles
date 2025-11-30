@@ -10,6 +10,8 @@ zstyle :compinstall filename '/home/yecinem/.zshrc'
 
 autoload -Uz compinit
 compinit
+zstyle ':completion:*' menu select
+
 # End of lines added by compinstall
 
 # Plugins
