@@ -466,6 +466,7 @@ myManageHook =
         <> (not <$> willFloat --> insertPosition Below Newer)
         <> mconcat manageHooks
         <> (isDialog --> doFloat)
+        <> (title =? "float-emacs" --> doCenterFloat <> doFocus)
   where
     manageHooks = generalRules ++ concat windowRules
     generalRules =

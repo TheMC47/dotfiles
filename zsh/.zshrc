@@ -67,8 +67,7 @@ bindkey "^[[H" beginning-of-line
 bindkey "^[[F" end-of-line
 
 ## Editor
-export EDITOR="emacs -nw"
-alias emacs="emacs -nw"
+export EDITOR="emacsclient -c -a '' -F '((name . \"float-emacs\"))'"
 
 export BROWSER="/usr/bin/brave"
 
