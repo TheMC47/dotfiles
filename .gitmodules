@@ -7,3 +7,9 @@
 [submodule "zsh/.zsh/zsh-vi-mode"]
 	path = zsh/.zsh/zsh-vi-mode
 	url = https://github.com/jeffreytse/zsh-vi-mode.git
+[submodule "alacritty/.config/alacritty"]
+	path = alacritty/.config/alacritty
+	url = https://github.com/catppuccin/alacritty.git
+[submodule "zsh/.zsh/zsh-autosuggestions"]
+	path = zsh/.zsh/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions.git
