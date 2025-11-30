@@ -1,14 +1,11 @@
 ;; ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-
 (setq user-full-name "Yecine Megdiche"
       user-mail-address "yecine.megdiche@gmail.com")
 (setq truncate-lines nil)
 (setq doom-font (font-spec :family "Fira Code" :size 12.0))
 (setq doom-font-increment 1.0)
 
-;; (setq catppuccin-flavor 'frappe)
-;; (load-theme 'catppuccin t t)
-(setq doom-theme 'modus-vivendi-tinted)
+(setq doom-theme 'doom-palenight)
 (setq display-line-numbers-type `relative)
 (setq-default indent-tabs-mode nil)
 (setq fancy-splash-image (concat doom-user-dir "club-mate.svg"))
