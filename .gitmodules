@@ -13,3 +13,15 @@
 [submodule "zsh/.zsh/zsh-autosuggestions"]
 	path = zsh/.zsh/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions.git
+[submodule "tmux/.config/tmux/plugins/tmux"]
+	path = tmux/.config/tmux/plugins/tmux
+	url = https://github.com/catppuccin/tmux.git
+[submodule "tmux/.config/tmux/plugins/tmux-sensible"]
+	path = tmux/.config/tmux/plugins/tmux-sensible
+	url = https://github.com/tmux-plugins/tmux-sensible.git
+[submodule "tmux/.config/tmux/plugins/tmux-yank"]
+	path = tmux/.config/tmux/plugins/tmux-yank
+	url = https://github.com/tmux-plugins/tmux-yank
+[submodule "tmux/.config/tmux/plugins/vim-tmux-navigator"]
+	path = tmux/.config/tmux/plugins/vim-tmux-navigator
+	url = https://github.com/christoomey/vim-tmux-navigator.git
