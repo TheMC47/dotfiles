@@ -172,5 +172,4 @@ autoload -U add-zsh-hook
 
 # add-zsh-hook chpwd load-nvmrc
 # load-nvmrc
-
-alias claude="/home/yecinem/.claude/local/claude"
+export PATH="$HOME/.local/bin:$PATH"
