@@ -125,29 +125,7 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # NPM
-lazy_load_nvm() {
-  unset -f node nvm
-
-  source /usr/share/nvm/init-nvm.sh
-
-  export NPM_PACKAGES="${HOME}/.npm-packages"
-  export PATH="$NPM_PACKAGES/bin:$PATH"
-  export NVM_DIR="$HOME/.nvm"
-
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-}
-
-node() {
-  lazy_load_nvm
-  node $@
-}
-
-nvm() {
-  lazy_load_nvm
-  node $@
-}
-
+eval "$(fnm env --use-on-cd)"
 
 autoload -U add-zsh-hook
 
