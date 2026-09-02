@@ -63,14 +63,17 @@
 
 (after! flyspell
   (add-hook! prog-mode
-    (setq! flyspell-prog-text-faces
-           '(font-lock-string-face
-             font-lock-comment-face
-             font-lock-doc-face
-             tree-sitter-hl-face:string
-             tree-sitter-hl-face:comment
-             tree-sitter-hl-face:doc)
-           flyspell-lazy-idle-seconds 0.5)))
+             ;; Use plain `setq` (not `setq!`) so the custom setter's `:type` check
+             ;; doesn't warn about the `tree-sitter-hl-face:*` symbols, which aren't
+             ;; declared in `flyspell-prog-text-faces`'s `(set (const ...))` type.
+             (setq flyspell-prog-text-faces
+                   '(font-lock-string-face
+                     font-lock-comment-face
+                     font-lock-doc-face
+                     tree-sitter-hl-face:string
+                     tree-sitter-hl-face:comment
+                     tree-sitter-hl-face:doc)
+                   flyspell-lazy-idle-seconds 0.5)))
 
 
 (custom-set-faces!
