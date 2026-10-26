@@ -7,3 +7,7 @@ success_symbol = "[➜](bold green)"     # The "success_symbol" segment is being
 
 [dotnet]
 disabled = true
+
+[git_status]
+# This repo has 10 submodules; scanning them dominates the cold-cache cost.
+ignore_submodules = true

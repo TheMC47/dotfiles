@@ -1,30 +1,40 @@
 [submodule "xmonad/.xmonad/xmonad"]
 	path = xmonad/.xmonad/xmonad
 	url = git@github.com:TheMC47/xmonad.git
+	ignore = dirty
 [submodule "xmonad/.xmonad/xmonad-contrib"]
 	path = xmonad/.xmonad/xmonad-contrib
 	url = git@github.com:TheMC47/xmonad-contrib.git
+	ignore = dirty
 [submodule "zsh/.zsh/zsh-vi-mode"]
 	path = zsh/.zsh/zsh-vi-mode
 	url = https://github.com/jeffreytse/zsh-vi-mode.git
+	ignore = dirty
 [submodule "alacritty/.config/alacritty"]
 	path = alacritty/.config/alacritty
 	url = https://github.com/catppuccin/alacritty.git
+	ignore = dirty
 [submodule "zsh/.zsh/zsh-autosuggestions"]
 	path = zsh/.zsh/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions.git
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/tmux"]
 	path = tmux/.config/tmux/plugins/tmux
 	url = https://github.com/catppuccin/tmux.git
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/tmux-sensible"]
 	path = tmux/.config/tmux/plugins/tmux-sensible
 	url = https://github.com/tmux-plugins/tmux-sensible.git
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/tmux-yank"]
 	path = tmux/.config/tmux/plugins/tmux-yank
 	url = https://github.com/tmux-plugins/tmux-yank
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/vim-tmux-navigator"]
 	path = tmux/.config/tmux/plugins/vim-tmux-navigator
 	url = https://github.com/christoomey/vim-tmux-navigator.git
+	ignore = dirty
 [submodule "tmux/.config/tmux/plugins/tpm"]
 	path = tmux/.config/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm.git
+	ignore = dirty

@@ -8,6 +8,7 @@ setopt autocd beep extendedglob nomatch notify
 # The following lines were added by compinstall
 zstyle :compinstall filename '/home/yecinem/.zshrc'
 
+fpath=(~/.zsh/completions $fpath)
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select
@@ -151,3 +152,4 @@ autoload -U add-zsh-hook
 # add-zsh-hook chpwd load-nvmrc
 # load-nvmrc
 export PATH="$HOME/.local/bin:$PATH"
+export PATH=/opt/homebrew/opt/rustup/bin:$PATH
