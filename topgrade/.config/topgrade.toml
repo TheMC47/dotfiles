@@ -1,2 +1,7 @@
+[misc]
 disable = ["vim", "snap", "git_repos", "flatpak", "deno"]
 assume_yes = true
+
+[commands]
+"zsh plugins" = "zsh -ic zsh-plugins-update"
+"tmux plugins" = "~/.local/share/tmux/plugins/tpm/bin/update_plugins all"

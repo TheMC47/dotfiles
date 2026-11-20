@@ -96,7 +96,7 @@ main =
                 trayerPaddingXmobarEventHook
                     <> windowedFullscreenFixEventHook
                     <> swallowEventHook
-                        (className =? "Alacritty")
+                        (className =? "com.mitchellh.ghostty")
                         (not <$> checkDock)
                     <> trayerAboveXmobarEventHook
                     <> trayAbovePanelEventHook (className =? "trayer") (className =? "eww")
@@ -336,15 +336,15 @@ scratchpads =
 --------
 
 myTerminal :: String
-myTerminal = "alacritty "
+myTerminal = "ghostty "
 
 inTerminal = (myTerminal <>)
 
 withTitleT :: ShowS
-withTitleT c = "--title " <> c <> " "
+withTitleT c = "--title=" <> c <> " "
 
 inDirT :: ShowS
-inDirT dir = "--working-directory \"" <> dir <> "\""
+inDirT dir = "--working-directory=\"" <> dir <> "\""
 
 terminalIn :: String -> X ()
 terminalIn = spawnHere . inTerminal . inDirT

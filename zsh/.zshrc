@@ -16,9 +16,8 @@ zstyle ':completion:*' special-dirs true
 # End of lines added by compinstall
 
 # Plugins
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/plugins.zsh
 source ~/.zsh/omz/stack.plugin.zsh
-source ~/.zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 ZVM_CURSOR_STYLE_ENABLED=false
 
 colors() {

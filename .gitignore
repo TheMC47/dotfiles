@@ -6,3 +6,6 @@ xmonad-x86_64-linux
 TAGS
 dist-newstyle/
 prompt-history
+
+# tpm default location; plugins belong in ~/.local/share/tmux/plugins
+tmux/.config/tmux/plugins/

@@ -1,0 +1,7 @@
+font-family = FiraCode Nerd Font Mono
+font-size = 12
+theme = Catppuccin Mocha
+
+# xmonad draws the borders
+window-decoration = false
+confirm-close-surface = false
