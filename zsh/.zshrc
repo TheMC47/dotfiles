@@ -56,12 +56,6 @@ alias sspi="ssh pi@192.168.1.2"
 alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
-alias django-test="./manage.py test"
-alias django-runserver="./manage.py runserver"
-alias django-shell="./manage.py shell"
-alias django-migrate="./manage.py migrate"
-alias django-makemigrations="./manage.py makemigrations"
-
 ## Keybindings
 bindkey "^[[3~" delete-char
 bindkey "^[[H" beginning-of-line
@@ -111,66 +105,15 @@ ex ()
 # Add doom binary to the path
 export PATH=$PATH:$HOME/.config/emacs/bin
 
+# User-local binaries (claude, npm globals)
+export PATH="$HOME/.local/bin:$PATH"
+
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 eval "$(thefuck --alias)"
-eval "$(zoxide init zsh)"
-alias cd=z
-
-# bun completions
-[ -s "/home/yecinem/.bun/_bun" ] && source "/home/yecinem/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# NPM
-lazy_load_nvm() {
-  unset -f node nvm
-
-  source /usr/share/nvm/init-nvm.sh
-
-  export NPM_PACKAGES="${HOME}/.npm-packages"
-  export PATH="$NPM_PACKAGES/bin:$PATH"
-  export NVM_DIR="$HOME/.nvm"
-
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-}
-
-node() {
-  lazy_load_nvm
-  node $@
-}
-
-nvm() {
-  lazy_load_nvm
-  node $@
-}
-
-
+if [[ "$CLAUDECODE" != "1" ]]; then
+    eval "$(zoxide init --cmd cd zsh)"
+fi
 autoload -U add-zsh-hook
 
-# load-nvmrc() {
-#   local nvmrc_path
-#   nvmrc_path="$(nvm_find_nvmrc)"
-
-#   if [ -n "$nvmrc_path" ]; then
-#     local nvmrc_node_version
-#     nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-
-#     if [ "$nvmrc_node_version" = "N/A" ]; then
-#       nvm install
-#     elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
-#       nvm use
-#     fi
-#   elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
-#     echo "Reverting to nvm default version"
-#     nvm use default
-#   fi
-# }
-
-# add-zsh-hook chpwd load-nvmrc
-# load-nvmrc
-
-alias claude="/home/yecinem/.claude/local/claude"
+setxkbmap -layout us
