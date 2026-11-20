@@ -35,21 +35,16 @@
 (setq +workspaces-switch-project-function #'open-magit-or-dired)
 
 (setq lsp-haskell-formatting-provider "fourmolu")
+;; haskell-indent-offset was removed from newer haskell-mode but Doom still references it
+(defvar haskell-indent-offset 2)
 
 (after! lsp-ui-mode
   (set-lookup-handlers! 'lsp-mode
     :definition #'+lsp-lookup-definition-handler
     :references #'+lsp-lookup-references-handler))
 
-(add-hook! 'typescript-mode-hook
-  (add-function :before-while (local 'tree-sitter-hl-face-mapping-function)
-                (lambda (capture-name)
-                  (pcase capture-name
-                    ("private" 'font-lock-comment-face)))))
-
 (setq pdf-view-resize-factor 1.1)
-;; (use-package! frames-only-mode
-;;   :hook (after-init . frames-only-mode))
+
 (after! persp-mode
   (setq persp-emacsclient-init-frame-behaviour-override "main"))
 
@@ -61,17 +56,6 @@
 
 (setq auth-sources '("~/.authinfo"))
 
-(after! flyspell
-  (add-hook! prog-mode
-    (setq! flyspell-prog-text-faces
-           '(font-lock-string-face
-             font-lock-comment-face
-             font-lock-doc-face
-             tree-sitter-hl-face:string
-             tree-sitter-hl-face:comment
-             tree-sitter-hl-face:doc)
-           flyspell-lazy-idle-seconds 0.5)))
-
 
 (custom-set-faces!
   '(corfu-current :background "#51576d"))
@@ -79,42 +63,6 @@
 (setq! corfu-preselect 'valid)
 
 (setq! sql-postgres-login-params nil)
-
-(defun my/ts-visit-test (arg)
-  "Visit the test file for the current buffer."
-  (interactive "P")
-  (if (not (derived-mode-p 'typescript-mode))
-      (message "Not in a typescript file!")
-    (let* ((file-name (file-name-sans-extension buffer-file-name))
-           (unit-test (not arg))
-           (test-file (if unit-test
-                          (concat file-name ".spec.ts")
-                        (concat file-name ".integration-spec.ts"))))
-      (if (file-exists-p test-file)
-          (find-file test-file)
-        (if (yes-or-no-p (format "Test file %s does not exist. Create it?" test-file))
-            (find-file test-file))))))
-
-
-(defun my/ts-toggle-test (arg)
-  "Toggle between implementation and test file."
-  (interactive "P")
-  (if (not (derived-mode-p 'typescript-mode))
-      (message "Not in a typescript file!")
-    (if (string-match-p "spec" buffer-file-name)
-        (let* ((base-file-name (file-name-sans-extension (file-name-sans-extension buffer-file-name)))
-               (src-file (concat base-file-name ".ts")))
-          (if (file-exists-p src-file)
-              (find-file src-file)
-            (message "File %s does not exist" src-file)))
-      (my/ts-visit-test arg))))
-
-
-(map! :after typescript-ts-mode
-      :map typescript-ts-mode-map
-      :leader
-      :desc "Visit test file" "o t" #'my/ts-visit-test
-      :desc "Toggle test file" "t t" #'my/ts-toggle-test)
 
 (use-package! agent-shell
   :bind ("C-c C-a" . agent-shell)
