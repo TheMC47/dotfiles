@@ -335,8 +335,10 @@ scratchpads =
 --- Emacs
 --------
 
+-- Open windows in the long-running Ghostty instance (systemd user service)
+-- instead of cold-starting a new process each time.
 myTerminal :: String
-myTerminal = "ghostty "
+myTerminal = "ghostty +new-window "
 
 inTerminal = (myTerminal <>)
 
