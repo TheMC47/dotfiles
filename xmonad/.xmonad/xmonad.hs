@@ -1,19 +1,28 @@
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 {-# OPTIONS_GHC -Wno-missing-signatures #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
 
+import Data.Aeson
 import Data.Bifunctor
+import Data.ByteString.Lazy.UTF8 (toString)
 import qualified Data.Map as M
+import GHC.Generics
 import XMonad
 import XMonad.Actions.CycleWS
 import XMonad.Actions.DynamicWorkspaceGroups
 import XMonad.Actions.DynamicWorkspaces
+import XMonad.Actions.OnScreen
 import XMonad.Actions.SpawnOn
 import XMonad.Actions.TopicSpace hiding (
     TI,
     TopicItem,
+    noAction,
     topicNames,
  )
 import XMonad.Actions.UpdatePointer
@@ -43,6 +52,7 @@ import XMonad.Prompt.FuzzyMatch
 import XMonad.Prompt.OrgMode
 import XMonad.Prompt.Workspace
 import XMonad.Prompt.XMonad
+import qualified XMonad.StackSet as S
 import qualified XMonad.StackSet as W
 import XMonad.Util.ClickableWorkspaces
 import XMonad.Util.EZConfig
@@ -52,7 +62,9 @@ import XMonad.Util.Loggers
 import XMonad.Util.NamedScratchpad hiding (
     name,
  )
+import XMonad.Util.NamedWindows (getName)
 import XMonad.Util.StickyWindows
+import XMonad.Util.WorkspaceCompare (getSortByIndex)
 
 myBgColor = "#2E3440"
 
@@ -66,14 +78,14 @@ main =
         . docks
         . dynamicSBs barSpawner
         . javaHack
+        . setRescreenDelay 500000 -- 500ms
+        -- . addRandrChangeHook (spawn "autorandr --change")
         . addAfterRescreenHook
-            ( -- spawn "autorandr --change"
-              --   >>
-              spawn "feh --bg-fill Wallpapers/mountain.png"
-                >> spawn "startKmonad"
+            ( spawn "feh --bg-fill Wallpapers/mountain.png"
             )
         . withUrgencyHook NoUrgencyHook
         . modal [overlayedFloatMode 10]
+        . enableEwmhManageAboveBelowState
         . ewmh
         $ def
             { manageHook = myManageHook <> namedScratchpadManageHook scratchpads
@@ -81,13 +93,14 @@ main =
             , workspaces = topicNames topics
             , layoutHook = myLayout
             , handleEventHook =
-                windowedFullscreenFixEventHook
+                trayerPaddingXmobarEventHook
+                    <> windowedFullscreenFixEventHook
                     <> swallowEventHook
                         (className =? "Alacritty")
                         (not <$> checkDock)
-                    <> trayerPaddingXmobarEventHook
                     <> trayerAboveXmobarEventHook
-            , logHook = updatePointer (0.5, 0.5) (0, 0)
+                    <> trayAbovePanelEventHook (className =? "trayer") (className =? "eww")
+            , logHook = updatePointer (0.5, 0.5) (0, 0) >> dumpState
             , focusedBorderColor = colorText
             , normalBorderColor = colorBase
             , terminal = myTerminal
@@ -132,6 +145,9 @@ main =
                                 , ("M-S-s", spawn "slock")
                                 , ("M-S-u", withFocused stick)
                                 , ("M-S-i", withFocused unstick)
+                                , ("<XF86MonBrightnessUp>", spawn "light -A 10")
+                                , ("<XF86MonBrightnessDown>", spawn "light -U 10")
+                                , ("M-v", windows (onScreen (W.view "1") FocusCurrent 1))
                                 ]
                                     ++ screenKeys
                                     ++ workspaceKeys
@@ -183,10 +199,9 @@ main =
                 ]
     inUse = hiddenWS :&: Not emptyWS :&: ignoringWSs [scratchpadWorkspaceTag]
 
-{- | A small helper function to make submaps. For the given key k,
- it binds @M-k@ to the given action, and prefixes the keys in the
- list with @M-C-k@
--}
+-- | A small helper function to make submaps. For the given key k,
+--  it binds @M-k@ to the given action, and prefixes the keys in the
+--  list with @M-C-k@
 makeSubmap :: String -> X () -> [(String, X ())] -> [(String, X ())]
 makeSubmap k action ks =
     ("M-" <> k, action) : map (first (("M-S-" <> k <> " ") <>)) ks
@@ -199,35 +214,7 @@ textIcon = xmobarFont 1
 workspaceIcon = xmobarFont 2
 
 myWorkspaces :: [String]
-myWorkspaces =
-    zipWith -- euum. yeah. I know. overengineered
-        (<>)
-        (map ((<> "") . show) [(1 :: Int) .. 10])
-        $ map
-            workspaceIcon
-            [ book
-            , -- 
-              "\xf120"
-            , -- 
-              "\xf002"
-            , -- 
-              "\xf108"
-            , -- 
-              "\xf108"
-            , -- 
-              "\xf108"
-            , -- 
-              "\xf108"
-            , -- 
-              "\xf095"
-            , -- 
-              "\xf2dc"
-            , -- 
-              "\xf11b \xf236" --  
-            ]
-
-book :: String
-book = "\xf02d"
+myWorkspaces = map show [(1 :: Int) .. 10]
 
 {--
 === Topics ===
@@ -464,19 +451,16 @@ myManageHook :: ManageHook
 myManageHook =
     manageSpawn
         <> (not <$> willFloat --> insertPosition Below Newer)
-        <> mconcat manageHooks
         <> (isDialog --> doFloat)
         <> (title =? "float-emacs" --> doCenterFloat <> doFocus)
+        <> (className =? "TestClass" --> doCenterFloat <> doShift (workspaceAt 2))
+        <> (stringProperty "WM_WINDOW_ROLE" =? "browser" --> ewmhDesktopsManageHook)
+        <> (className =? "discord" --> doShift (workspaceAt 8))
+        <> (title =? "Netflix" <||> className =? "vlc" --> doFixAspect (16 / 9))
+        <> (title =? "alsamixer" --> doFloat)
+        -- <> (title ^? "Mercury" --> doCenterFloat)
+        <> mconcat [className =? c --> doFloat | c <- floatsClasses]
   where
-    manageHooks = generalRules ++ concat windowRules
-    generalRules =
-        [ className =? "discord" --> doShift (workspaceAt 8)
-        , title =? "Netflix" <||> className =? "vlc" --> doFixAspect (16 / 9)
-        ]
-    windowRules =
-        [ [className =? c --> doFloat | c <- floatsClasses]
-        , [title =? t --> doFloat | t <- floatsTitles]
-        ]
     floatsClasses =
         [ "MPlayer"
         , "Gimp"
@@ -485,7 +469,6 @@ myManageHook =
         , "ksmserver-logout-greeter"
         , "R_x11"
         ]
-    floatsTitles = ["alsamixer"]
 
 ---------------------
 -- Status Bars
@@ -512,6 +495,107 @@ withScreen f n = do
         Just s -> f s
         Nothing -> pure Nothing
 
+data WorkspaceDump = WorkspaceDump
+    { tag :: !String
+    , isCurrent :: !Bool
+    , isVisible :: !Bool
+    , isUrgent :: !Bool
+    , hasWindows :: !Bool
+    , layout :: !String
+    , currentWindow :: !(Maybe String)
+    , index :: !(Maybe Int)
+    , screenId :: !(Maybe ScreenId)
+    }
+    deriving (Generic, Show)
+
+data ScreenDump = ScreenDump
+    { screen :: !ScreenId
+    , currentDesktop :: !WorkspaceDump
+    }
+    deriving (Generic, Show)
+
+data StateDump = StateDump
+    { _workspaces :: ![WorkspaceDump]
+    , screens :: ![ScreenDump]
+    }
+    deriving (Generic, Show)
+
+instance ToJSON ScreenId where
+    toJSON (S n) = toJSON n
+instance ToJSON WorkspaceDump
+instance ToJSON ScreenDump
+instance ToJSON StateDump where
+    toJSON StateDump{..} =
+        object
+            [ "workspaces" .= _workspaces
+            , "screens" .= screens
+            ]
+
+dumpWindowSpace :: [Window] -> WindowSet -> Maybe Int -> WindowSpace -> X WorkspaceDump
+dumpWindowSpace urgents windowSet idx ws =
+    do
+        let stack = S.stack ws
+            windowName = (fmap show . getName) . S.focus <$> stack
+        currentWindow <- sequence windowName
+        return
+            WorkspaceDump
+                { tag = S.tag ws
+                , isCurrent = S.tag ws == S.currentTag windowSet
+                , isVisible = S.tag ws `elem` map (S.tag . S.workspace) (S.visible windowSet)
+                , isUrgent = any (\x -> (== Just (S.tag ws)) (S.findTag x windowSet)) urgents
+                , hasWindows = isJust stack
+                , layout = description . S.layout $ ws
+                , currentWindow = currentWindow
+                , index = idx
+                , screenId = fmap S.screen . find ((== S.tag ws) . S.tag . S.workspace) . S.screens $ windowSet
+                }
+
+dumpScreen :: [Window] -> WindowSet -> WindowScreen -> X ScreenDump
+dumpScreen urgents windowSet screen =
+    do
+        windowSpaceDump <- dumpWindowSpace urgents windowSet Nothing (W.workspace screen)
+        return
+            ScreenDump
+                { screen = W.screen screen
+                , currentDesktop = windowSpaceDump
+                }
+
+getStateDump :: X StateDump
+getStateDump = do
+    winset <- gets windowset
+    wSort <- getSortByIndex
+    urgents <- readUrgents
+    wsDump <- zipWithM (dumpWindowSpace urgents winset) (map Just [0 ..]) . wSort . filter ((/= scratchpadWorkspaceTag) . S.tag) . S.workspaces $ winset
+    ssDump <- traverse (dumpScreen urgents winset) . W.screens $ winset
+    return
+        StateDump
+            { _workspaces = wsDump
+            , screens = ssDump
+            }
+
+dumpState :: X ()
+dumpState = getStateDump <&> toString . encode >>= xmonadPropLog' "_XMONAD_DUMP"
+
+renameAddIcon :: String -> WindowSpace -> String
+renameAddIcon = const . workspaceWithIcon
+
+workspaceWithIcon :: String -> String
+workspaceWithIcon = lookupIcon
+  where
+    wsPairs =
+        [ ("1", "\xf02d")
+        , ("2", "\xf120")
+        , ("3", "\xf002")
+        , ("4", "\xf108")
+        , ("5", "\xf108")
+        , ("6", "\xf108")
+        , ("7", "\xf108")
+        , ("8", "\xf095")
+        , ("9", "\xf2dc")
+        , ("10", "\xf236")
+        ]
+    lookupIcon w = maybe w ((w <>) . workspaceIcon) (lookup w wsPairs)
+
 topPP :: X PP
 topPP =
     clickablePP . filterOutWsPP [scratchpadWorkspaceTag] $
@@ -527,6 +611,7 @@ topPP =
                 , logMode
                 ]
             , ppOrder = \(ws : _ : _ : extras) -> ws : extras
+            , ppRename = renameAddIcon
             }
 
 secondaryPP :: ScreenId -> X PP
@@ -536,15 +621,56 @@ secondaryPP s =
             { ppOrder = \(_ : _ : _ : extras) -> extras
             , ppSep = " | "
             , ppExtras =
-                [ logCurrentOnScreen s
+                [ workspaceWithIcon <$$> logCurrentOnScreen s
                 , logLayoutOnScreen s
                 , shortenL 50 $ logTitleOnScreen s
                 , logWhenActive s (logConst "*")
                 ]
             }
 
+data EwwWindow = EwwWindow
+    { windowName :: !String
+    , windowArgs :: ![(String, String)]
+    , windowId :: !String
+    }
+    deriving (Show, Generic)
+
+ewwStatusBar :: [EwwWindow] -> StatusBarConfig
+ewwStatusBar ewws =
+    def
+        { sbStartupHook =
+            spawn $
+                unwords
+                    ( [ "eww"
+                      , "open-many"
+                      , windowNames
+                      ]
+                        ++ args
+                    )
+        , sbCleanupHook = spawn $ "eww close " <> unwords (map windowId ewws)
+        }
+  where
+    windowNames = unwords $ map (\EwwWindow{..} -> windowName <> ":" <> windowId) ewws
+    args =
+        concatMap
+            ( \EwwWindow{..} ->
+                concatMap
+                    ( \(k, v) -> ["--arg", windowId <> ":" <> k <> "=" <> v]
+                    )
+                    windowArgs
+            )
+            ewws
+
+ewwWorkspacesPrimary :: EwwWindow
+ewwWorkspacesPrimary =
+    EwwWindow
+        { windowName = "workspacesWin"
+        , windowArgs = [("screenId", "0"), ("verbose", "true")]
+        , windowId = "workspaces0"
+        }
+
 barSpawner :: ScreenId -> X StatusBarConfig
-barSpawner 0 = pure $ statusBarProp (withLog "xmobar top") topPP <> traySB
+barSpawner 0 = pure $ statusBarProp (withLog "echo \"starting xmobar\"; xmobar top") topPP <> traySB -- <> ewwStatusBar [ewwWorkspacesPrimary]
 barSpawner s@(S n) =
     pure $
         statusBarPropTo

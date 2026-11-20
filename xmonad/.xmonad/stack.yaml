@@ -2,10 +2,12 @@ resolver: lts-21.22
 
 packages:
   - .
+  - /home/yecinem/projects/xmonad-contrib
 
 extra-deps:
   - X11-xft-0.3.4
-  - github: TheMC47/xmonad
-    commit: "b6dc78bee78d45ec223cce4b6b49d7e200bcd8f1"
-  - github: TheMC47/xmonad-contrib
-    commit: "5d6bc227ebef04a3f8ddb6093dc421866d6bad2e"
+  # - github: TheMC47/xmonad
+  #   commit: "b6dc78bee78d45ec223cce4b6b49d7e200bcd8f1"
+  # - github: TheMC47/xmonad-contrib
+  #   commit: "5d6bc227ebef04a3f8ddb6093dc421866d6bad2e"
+  - xmonad-0.18.0

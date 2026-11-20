@@ -1,117 +1,133 @@
 {-# OPTIONS_GHC -Wno-missing-signatures -Wno-unused-top-binds #-}
 
+module Main where
+
+import Rapid
 import System.Environment
 import Xmobar
 
 baseConfig :: Config
 baseConfig =
-  defaultConfig
-    { font = mainFont
-    , additionalFonts = [iconFont, workspaceIconFont]
-    , overrideRedirect = False
-    , lowerOnStart = True
-    , iconRoot = "/home/yecinem/xmobarrc/xpm"
-    , bgColor = colorBase
-    , fgColor = colorText
-    , sepChar = "%"
-    , alignSep = "}{"
-    }
+    defaultConfig
+        { font = mainFont
+        , additionalFonts = [iconFont, workspaceIconFont]
+        , overrideRedirect = False
+        , lowerOnStart = True
+        , iconRoot = "/home/yecinem/xmobarrc/xpm"
+        , bgColor = colorBase
+        , fgColor = colorText
+        , sepChar = "%"
+        , alignSep = "}{"
+        }
 
 topBar :: Config
 topBar =
-  baseConfig
-    { commands = myCommands
-    , position = OnScreen 0 (TopHM 30 26 26 15 0)
-    , template = green " >>=" <> " %UnsafeXMonadLog%}{%cpu% %memory% %battery% %time% %date% %_XMONAD_TRAYPAD%"
-    }
+    baseConfig
+        { commands = myCommands
+        , position = OnScreen 0 (TopHM 30 26 26 15 0)
+        , template =
+            green " >>="
+                <> " %UnsafeXMonadLog%}{" -- <> xmobarAction 1 "pamixer -t" "%alsa:default:Master%"
+                <> " %cpu% %memory% %battery% %time% %date% %_XMONAD_TRAYPAD%"
+        }
+
+xmobarAction :: Int -> String -> String -> String
+xmobarAction button cmd content =
+    "<action=`"
+        <> cmd
+        <> "` button="
+        <> show button
+        <> ">"
+        <> content
+        <> "</action>"
 
 secondary :: Int -> Config
 secondary i =
-  baseConfig
-    { template =
-        green " >>="
-          <> " %"
-          <> customProp
-          <> "%}{"
-    , position = OnScreen i (TopHM 30 26 26 15 0)
-    , commands = [Run $ UnsafeXPropertyLog customProp]
-    }
- where
-  customProp = "_XMONAD_LOG__Secondary_" <> show i
+    baseConfig
+        { template =
+            green " >>="
+                <> " %"
+                <> customProp
+                <> "%}{"
+        , position = OnScreen i (TopHM 30 26 26 15 0)
+        , commands = [Run $ UnsafeXPropertyLog customProp]
+        }
+  where
+    customProp = "_XMONAD_LOG__Secondary_" <> show i
 
 myCommands :: [Runnable]
 myCommands =
-  [ Run $
-      Cpu
-        [ "--template"
-        , sky (cpuIcon <> "<total>")
-        , "--High"
-        , "77"
-        , "--high"
-        , colorRed
-        , "--suffix"
-        , "Yes"
-        , "--ppad"
-        , "2"
-        ]
-        10
-  , Run $
-      Memory
-        [ "--template"
-        , teal (memoryIcon <> "<usedratio>")
-        , "--High"
-        , "77" -- %
-        , "--high"
-        , colorRed
-        , "--ppad"
-        , "2"
-        , "--suffix"
-        , "Yes"
-        ]
-        10
-  , Run $ Date (yellow (clockIcon <> " %H:%M")) "time" 10
-  , Run $ Date (peach (calendarIcon <> " %a %b %_d")) "date" 10
-  , Run $
-      Battery
-        [ "--template"
-        , "<acstatus>"
-        , "--Low"
-        , "15" -- Low  threshold for colours (in %)
-        , "--High"
-        , "70" -- High threshold for colours (in %)
-        , "--low"
-        , colorRed
-        , "--normal"
-        , colorGreen
-        , "--high"
-        , colorGreen
-        , "--suffix"
-        , "True" -- Display '%' after '<left>'.
-        , "--" -- battery specific options start here.
-        , "--off"
-        , "<left> (<timeleft>)" -- Not plugged
-        , "--on"
-        , green (batteryChargingIcon <> "<left> (<timeleft>)") -- Plugged.
-        , "--idle"
-        , green (batteryFullIcon <> "<left>") -- Fully charged.
-        -- Charge strings.  These go _in front_ of the @AC off@ string,
-        -- while the @AC on@ and @idle@ strings ignore them.
-        , "--lowt"
-        , "15" -- Low  threshold for charge strings (in %).
-        , "--hight"
-        , "70" -- High threshold for charge strings (in %).
-        , "--lows"
-        , batteryLowIcon
-        , "--mediums"
-        , batteryMediumIcon
-        , "--highs"
-        , batteryFullIcon
-        ]
-        10
-  , Run UnsafeXMonadLog
-  , Run $ UnsafeXPropertyLog "_XMONAD_TRAYPAD"
-  , Run $ UnsafeXPropertyLog "_XMONAD_LOG__MAIN_WINDOW_NAME"
-  ]
+    [ Run $
+        Cpu
+            [ "--template"
+            , sky (cpuIcon <> "<total>")
+            , "--High"
+            , "77"
+            , "--high"
+            , colorRed
+            , "--suffix"
+            , "Yes"
+            , "--ppad"
+            , "2"
+            ]
+            10
+    , Run $
+        Memory
+            [ "--template"
+            , teal (memoryIcon <> "<usedratio>")
+            , "--High"
+            , "77" -- %
+            , "--high"
+            , colorRed
+            , "--ppad"
+            , "2"
+            , "--suffix"
+            , "Yes"
+            ]
+            10
+    , Run $ Date (yellow (clockIcon <> " %H:%M")) "time" 10
+    , Run $ Date (peach (calendarIcon <> " %a %b %_d")) "date" 10
+    , Run $
+        Battery
+            [ "--template"
+            , "<acstatus>"
+            , "--Low"
+            , "15" -- Low  threshold for colours (in %)
+            , "--High"
+            , "70" -- High threshold for colours (in %)
+            , "--low"
+            , colorRed
+            , "--normal"
+            , colorGreen
+            , "--high"
+            , colorGreen
+            , "--suffix"
+            , "True" -- Display '%' after '<left>'.
+            , "--" -- battery specific options start here.
+            , "--off"
+            , "<left> (<timeleft>)" -- Not plugged
+            , "--on"
+            , green (batteryChargingIcon <> "<left> (<timeleft>)") -- Plugged.
+            , "--idle"
+            , green (batteryFullIcon <> "<left>") -- Fully charged.
+            -- Charge strings.  These go _in front_ of the @AC off@ string,
+            -- while the @AC on@ and @idle@ strings ignore them.
+            , "--lowt"
+            , "15" -- Low  threshold for charge strings (in %).
+            , "--hight"
+            , "70" -- High threshold for charge strings (in %).
+            , "--lows"
+            , batteryLowIcon
+            , "--mediums"
+            , batteryMediumIcon
+            , "--highs"
+            , batteryFullIcon
+            ]
+            10
+    , Run UnsafeXMonadLog
+    , Run $ UnsafeXPropertyLog "_XMONAD_TRAYPAD"
+    , Run $ UnsafeXPropertyLog "_XMONAD_LOG__MAIN_WINDOW_NAME"
+    ]
 
 mainFont = "Fira Code 12"
 iconFont = "Font Awesome 7 Free 10"
@@ -131,47 +147,50 @@ batteryChargingIcon = textIcon "\xf1e6 \xf240"
 
 main :: IO ()
 main = do
-  xs <- getArgs
-  case xs of
-    ["secondary", n] -> xmobar $ secondary (read n)
-    _ -> xmobar topBar
+    xs <- getArgs
+    case xs of
+        ["secondary", n] -> xmobar $ secondary (read n)
+        _ -> xmobar topBar
+
+update = rapid 0 $ \r -> do
+    stop r "bar" $ xmobar topBar
+    restart r "bar" $ xmobar topBar
 
 -- Stolen from XMonad
 
-{- | Use xmobar escape codes to output a string with given foreground
-   and background colors.
--}
+-- | Use xmobar escape codes to output a string with given foreground
+--    and background colors.
 xmobarColor ::
-  -- | foreground color: a color name, or #rrggbb format
-  String ->
-  -- | background color
-  String ->
-  -- | output string
-  String ->
-  String
+    -- | foreground color: a color name, or #rrggbb format
+    String ->
+    -- | background color
+    String ->
+    -- | output string
+    String ->
+    String
 xmobarColor fg bg = wrap t "</fc>"
- where
-  t = concat ["<fc=", fg, if null bg then "" else "," ++ bg, ">"]
+  where
+    t = concat ["<fc=", fg, if null bg then "" else "," ++ bg, ">"]
 
 -- | Wrap a string in delimiters, unless it is empty.
 wrap ::
-  -- | left delimiter
-  String ->
-  -- | right delimiter
-  String ->
-  -- | output string
-  String ->
-  String
+    -- | left delimiter
+    String ->
+    -- | right delimiter
+    String ->
+    -- | output string
+    String ->
+    String
 wrap _ _ "" = ""
 wrap l r m = l ++ m ++ r
 
 -- | Use xmobar escape codes to output a string with the font at the given index
 xmobarFont ::
-  -- | index: index of the font to use (0: standard font)
-  Int ->
-  -- | output string
-  String ->
-  String
+    -- | index: index of the font to use (0: standard font)
+    Int ->
+    -- | output string
+    String ->
+    String
 xmobarFont index = wrap ("<fn=" ++ show index ++ ">") "</fn>"
 
 colorRosewater = "#f2d5cf"

@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -15,12 +15,14 @@ library
       ./
   build-depends:
       X11
+    , aeson
     , base >=4.7 && <5
     , containers
     , directory
     , flow
     , process
     , split
+    , time
     , unix
     , utf8-string
     , xmonad
@@ -34,12 +36,14 @@ executable xmonad-private
   ghc-options: -Wall
   build-depends:
       X11
+    , aeson
     , base >=4.7 && <5
     , containers
     , directory
     , flow
     , process
     , split
+    , time
     , unix
     , utf8-string
     , xmonad

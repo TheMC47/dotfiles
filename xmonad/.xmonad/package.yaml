@@ -1,26 +1,27 @@
-name:
-    xmonad-private
+name: xmonad-private
 
 dependencies:
-    - base >= 4.7 && < 5
-    - xmonad
-    - xmonad-contrib
-    - X11
-    - containers
-    - flow
-    - process
-    - unix
-    - split
-    - utf8-string
-    - directory
+  - base >= 4.7 && < 5
+  - xmonad
+  - xmonad-contrib
+  - X11
+  - containers
+  - flow
+  - process
+  - unix
+  - split
+  - utf8-string
+  - directory
+  - aeson
+  - time
 
 library:
-    source-dirs: .
+  source-dirs: .
 
 executables:
   xmonad-private:
-    main:              xmonad.hs
+    main: xmonad.hs
     ghc-options:
-    - -Wall
+      - -Wall
     dependencies:
-    - xmonad-private
+      - xmonad-private
