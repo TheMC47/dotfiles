@@ -1,5 +1,5 @@
 (defcfg
-  input  (device-file "$KBD_ENV")
+  input  (device-file "$KBD_ENV") ;; placeholder: overridden by -i in global-kmonad@.service
   output (uinput-sink "My KMonad output" "sleep 1 && setxkbmap -option compose:menu")
   cmp-seq cmps
   cmp-seq-delay 5 ;; 5ms delay between each compose-key sequence press

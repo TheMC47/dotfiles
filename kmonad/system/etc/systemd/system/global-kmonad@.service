@@ -1,0 +1,8 @@
+[Unit]
+Description=KMonad configuration using /home/yecinem/.config/kmonad/config.kbd
+DefaultDependencies=no
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/kmonad -i 'device-file "%I"' /home/yecinem/.config/kmonad/config.kbd
+Nice=-20

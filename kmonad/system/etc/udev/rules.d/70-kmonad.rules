@@ -1,0 +1,25 @@
+# Start one global-kmonad@<devnode>.service per physical keyboard.
+# Installed to /etc/udev/rules.d/ by kmonad/system/install.sh.
+ACTION!="add", GOTO="kmonad_end"
+KERNEL!="event[0-9]*", GOTO="kmonad_end"
+SUBSYSTEM!="input", GOTO="kmonad_end"
+
+PROGRAM+="/usr/bin/systemd-escape -p '$devnode'"
+
+# Built-in laptop keyboard.
+DRIVERS=="atkbd", \
+TAG+="systemd", \
+ENV{SYSTEMD_WANTS}+="global-kmonad@$result.service"
+
+# USB boot keyboards. A single keyboard interface can expose several event
+# nodes (media/system keys), so require ID_INPUT_KEYBOARD to pick only the
+# real keyboard node. Gaming mice with a macro "keyboard" interface (e.g. the
+# Razer DeathAdder) also match; that extra instance is harmless.
+ATTRS{bInterfaceClass}=="03", \
+ATTRS{bInterfaceSubClass}=="01", \
+ATTRS{bInterfaceProtocol}=="01", \
+ENV{ID_INPUT_KEYBOARD}=="1", \
+TAG+="systemd", \
+ENV{SYSTEMD_WANTS}+="global-kmonad@$result.service"
+
+LABEL="kmonad_end"

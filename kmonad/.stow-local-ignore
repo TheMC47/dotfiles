@@ -1,0 +1,3 @@
+# Files under system/ go to /etc via system/install.sh, not to $HOME.
+^/system$
+^/README.*
