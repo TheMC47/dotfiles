@@ -1,0 +1,13 @@
+xrandr --setprovideroutputsource modesetting NVIDIA-0
+xrandr --auto
+xsetroot -cursor_name left_ptr
+nvidia-settings --assign CurrentMetaMode="nvidia-auto-select +0+0 { ForceFullCompositionPipeline = On }"
+autorandr --change
+feh --bg-fill Wallpapers/mountain.png
+picom --config /home/yecinem/picom.conf -b
+volumeicon &
+redshift-gtk &
+nm-applet &
+dunst &
+udiskie &
+/usr/bin/lxqt-policykit-agent &
