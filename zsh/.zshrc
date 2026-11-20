@@ -1,7 +1,10 @@
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=50000
+SAVEHIST=50000
+# share_history: every shell sees commands from the others as they're run.
+# hist_ignore_space: a command starting with a space isn't saved (secrets).
+setopt share_history hist_ignore_all_dups hist_reduce_blanks hist_ignore_space
 
 setopt autocd beep extendedglob nomatch notify
 # End of lines configured by zsh-newuser-install
@@ -56,9 +59,13 @@ alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
 ## Keybindings
-bindkey "^[[3~" delete-char
-bindkey "^[[H" beginning-of-line
-bindkey "^[[F" end-of-line
+# zsh-vi-mode sets up its keymaps at the first prompt, wiping bindings made
+# earlier in this file, so make them in its after-init hook instead.
+zvm_after_init() {
+  bindkey "^[[3~" delete-char
+  bindkey "^[[H" beginning-of-line
+  bindkey "^[[F" end-of-line
+}
 
 ## Editor
 export EDITOR="emacsclient -c -a '' -F '((name . \"float-emacs\"))'"
@@ -109,10 +116,18 @@ export PATH="$HOME/.local/bin:$PATH"
 
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
-eval "$(thefuck --alias)"
 if [[ "$CLAUDECODE" != "1" ]]; then
     eval "$(zoxide init --cmd cd zsh)"
 fi
 autoload -U add-zsh-hook
 
-setxkbmap -layout us
+# thefuck takes ~110ms to initialise, so only load it the first time `fuck` runs:
+# this stub replaces itself with the real function, then calls it.
+fuck() {
+  unfunction fuck
+  eval "$(thefuck --alias)"
+  fuck "$@"
+}
+
+# Drop duplicate PATH entries (the arrays `path` and `PATH` are linked).
+typeset -U path PATH
