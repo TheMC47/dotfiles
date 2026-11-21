@@ -95,9 +95,12 @@ main =
             , handleEventHook =
                 trayerPaddingXmobarEventHook
                     <> windowedFullscreenFixEventHook
+                    -- All Ghostty windows share one process (single instance), so every
+                    -- new Ghostty window looks like a child of the focused one. Never let
+                    -- a Ghostty window swallow another.
                     <> swallowEventHook
                         (className =? "com.mitchellh.ghostty")
-                        (not <$> checkDock)
+                        ((not <$> checkDock) <&&> (className /=? "com.mitchellh.ghostty"))
                     <> trayerAboveXmobarEventHook
                     <> trayAbovePanelEventHook (className =? "trayer") (className =? "eww")
             , logHook = updatePointer (0.5, 0.5) (0, 0) >> dumpState

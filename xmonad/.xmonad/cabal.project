@@ -1,0 +1,6 @@
+packages:
+  .
+  /home/yecinem/projects/xmonad-contrib
+  /home/yecinem/projects/xmonad
+-- xmonad from Hackage instead
+-- constraints: xmonad ==0.18.*

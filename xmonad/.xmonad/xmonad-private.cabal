@@ -1,43 +1,18 @@
-cabal-version: 1.12
+cabal-version: 2.4
+name:          xmonad-private
+version:       0.0.0
+build-type:    Simple
 
--- This file has been generated from package.yaml by hpack version 0.37.0.
---
--- see: https://github.com/sol/hpack
-
-name:           xmonad-private
-version:        0.0.0
-build-type:     Simple
-
-library
-  other-modules:
-      Paths_xmonad_private
-  hs-source-dirs:
-      ./
-  build-depends:
-      X11
-    , aeson
-    , base >=4.7 && <5
-    , containers
-    , directory
-    , flow
-    , process
-    , split
-    , time
-    , unix
-    , utf8-string
-    , xmonad
-    , xmonad-contrib
-  default-language: Haskell2010
-
+-- Single executable on purpose: `xmonad --recompile` runs `cabal build` and
+-- then copies whatever `cabal list-bin .` reports.
 executable xmonad-private
-  main-is: xmonad.hs
-  other-modules:
-      Paths_xmonad_private
-  ghc-options: -Wall
+  main-is:          xmonad.hs
+  ghc-options:      -Wall
+  default-language: Haskell2010
   build-depends:
-      X11
+      base >=4.7 && <5
+    , X11
     , aeson
-    , base >=4.7 && <5
     , containers
     , directory
     , flow
@@ -48,5 +23,3 @@ executable xmonad-private
     , utf8-string
     , xmonad
     , xmonad-contrib
-    , xmonad-private
-  default-language: Haskell2010
